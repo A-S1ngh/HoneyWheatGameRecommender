@@ -1,3 +1,3 @@
-Simeon, what's your favorite color?: 
+Simeon, what's your favorite color?: REd
 Kielan, what's your favorite movie?: Madagascar
 Mustafa, what's your favorite place to eat?: Nothing better than a home cooked meal.
