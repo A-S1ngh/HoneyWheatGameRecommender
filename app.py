@@ -1,7 +1,11 @@
 import flask
 import os
+import requests
 from flask_sqlalchemy import SQLAlchemy
+from dotenv import find_dotenv, load_dotenv
+from steamspy import querygames
 
+load_dotenv(find_dotenv())
 # database still need to be connected to a heroku url
 app = flask.Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
@@ -10,13 +14,16 @@ db = SQLAlchemy(app)
 db.init_app(app)
 
 
-@app.route("/")
+@app.route("/", methods=["POST", "GET"])
 def login():
+    """ "login"""
+    querygames()
     return flask.render_template("index.html")
 
 
-@app.route("/signup")
+@app.route("/signup", methods=["POST", "GET"])
 def signup():
+    """signup"""
     return flask.render_template("signup.html")
 
 
