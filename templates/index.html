@@ -34,10 +34,11 @@
     <div class="login-class" style="text-align: center;">
         <form action="#" method='POST' id='login-form'>
             <input type="text" value="Email" name='email'><br><br>
-            <input type="text" value="Password" name='password'>
+            <input type="text" value="Password" name='password'><br><br>
+            <input type="submit" value='Log In'>
         </form>
         <br>
-        <a href="#">Don't have an account? Sign up here!</a>
+        <a href="{{ url_for('signup') }}">Don't have an account? Sign up here!</a>
     </div>
     {% endblock %}
 </body>
