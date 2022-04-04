@@ -1,0 +1,13 @@
+{% extends 'index.html' %}
+{% block content %}
+<h3 id="signup-text" style="text-align: center; color: red;">Sign Up</h3><br>
+<div class="signup-class" style="text-align: center;">
+    <form action="#" method='POST' id='signup-form'>
+        <input type="text" value="Email" name='email'><br><br>
+        <input type="text" value="Password" name='password'><br><br>
+        <input type="submit" value="Sign Up">
+    </form>
+    <br>
+    <a href="{{ url_for('login') }}">Already have an account? Log in here!</a>
+</div>
+{% endblock %}

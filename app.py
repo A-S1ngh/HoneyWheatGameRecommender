@@ -2,17 +2,22 @@ import flask
 import os
 from flask_sqlalchemy import SQLAlchemy
 
-# database still need to be connected to a heroku url 
+# database still need to be connected to a heroku url
 app = flask.Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
-app.config['SQLALCHEMY_TRACK_MODIFICATION'] = False
-db=SQLAlchemy(app)
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
+app.config["SQLALCHEMY_TRACK_MODIFICATION"] = False
+db = SQLAlchemy(app)
 db.init_app(app)
 
 
 @app.route("/")
 def login():
     return flask.render_template("index.html")
+
+
+@app.route("/signup")
+def signup():
+    return flask.render_template("signup.html")
 
 
 if __name__ == "__main__":
