@@ -1,0 +1,21 @@
+{% extends 'index.html' %}
+{% block content %}
+<div>
+    <u>
+        <h2 style="text-align: center; color: white;">'s Profile</h2>
+    </u>
+    <h3 style="text-align: center; color: white;">Email: </h3>
+    <h3 style="text-align: center; color: purple;">Action Rating: </h3>
+    <h3 style="text-align: center; color: yellow;">Adventure Rating: </h3>
+    <h3 style="text-align: center; color: orange;">Role Playing Rating: </h3>
+    <h3 style="text-align: center; color: blue;">Strategy Rating: </h3>
+    <h3 style="text-align: center; color: green;">Sports Rating: </h3>
+    <h3 style="text-align: center; color: red;">Simulation Rating: </h3>
+    <h3 style="text-align: center; color: greenyellow;">Racing Rating: </h3><br>
+    <div class="col text-center">
+        <button href="{{ url_for('survey') }}" class='btn btn-info mx-auto' style="text-align: center;">Retake the
+            Survey!</button>
+    </div>
+
+</div>
+{% endblock %}
