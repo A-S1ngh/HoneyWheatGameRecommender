@@ -4,19 +4,24 @@ import requests
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import find_dotenv, load_dotenv
 from steamspy import querygames
-
+from models import User, Survey, db
 load_dotenv(find_dotenv())
 # database still need to be connected to a heroku url
 app = flask.Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATION"] = False
-db = SQLAlchemy(app)
+
 db.init_app(app)
 
+
+with app.app_context():
+    db.create_all()
 
 @app.route("/", methods=["POST", "GET"])
 def login():
     """ "login"""
+    users = Survey.query.all()
+    print(users)
     querygames()
     return flask.render_template("index.html")
 
