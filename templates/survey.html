@@ -1,0 +1,20 @@
+{% extends 'index.html' %}
+{% block content %}
+<h2 style="text-align: center; color: purple;">Game Preference Survey</h2>
+<h3 style="text-align: center; color: purple;">On a scale of 1 to 10(1 being I hate it, 10 being this is the greatest
+    genre
+    of all time), please rate how much you
+    like each video game genre.</h3><br><br>
+<div>
+    <form action="#" style="text-align: center; color: yellow;">
+        Action: <input type="number" name='action' min="1" max="10">
+        Adventure: <input type="number" name='adventure' min="1" max="10">
+        Role Playing: <input type="number" name='roleplaying' min="1" max="10">
+        Strategy: <input type="number" name='strategy' min="1" max="10">
+        Sports: <input type="number" name='sports' min="1" max="10">
+        Simulation: <input type="number" name='simulation' min="1" max="10">
+        Racing: <input type="number" name='racing' min="1" max="10"><br><br>
+        <input type="submit" value="Finish Survey" style="background-color: salmon;">
+    </form>
+</div>
+{% endblock %}
