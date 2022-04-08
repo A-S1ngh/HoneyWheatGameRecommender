@@ -9,7 +9,11 @@ from models import User, Survey, db
 
 load_dotenv(find_dotenv())
 app = flask.Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
+app.secret_key = os.getenv("SECRET_KEY")
+db_url = os.getenv("DATABASE_URL")
+if db_url.startswith("postgres://"):
+    db_url = db_url.replace("postgres://", "postgresql://", 1)
+app.config["SQLALCHEMY_DATABASE_URI"] = db_url
 app.config["SQLALCHEMY_TRACK_MODIFICATION"] = False
 
 db.init_app(app)
@@ -23,7 +27,7 @@ def login():
     """ "login"""
     users = Survey.query.all()
     print(users)
-    # querygames()
+    querygames()
     return flask.render_template("index.html")
 
 
