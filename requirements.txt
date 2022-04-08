@@ -3,4 +3,5 @@ requests
 Flask
 flask-login
 psycopg2-binary
-Flask-sqlalchemy==2.1
+Flask-SQLAlchemy
+
