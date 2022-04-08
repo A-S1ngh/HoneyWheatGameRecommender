@@ -12,7 +12,7 @@ import requests
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import find_dotenv, load_dotenv
 from steamspy import querygames
-from models import User, Survey, db
+from models import db, User, Survey
 
 
 load_dotenv(find_dotenv())
@@ -44,9 +44,14 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+
 @app.route("/", methods=["POST", "GET"])
 def login():
-    """ "login"""
+    """login"""
     if flask.request.method == "POST":
         email = flask.request.form["email"]
         password = flask.request.form["password"]
@@ -88,10 +93,62 @@ def signup():
     # GET route
     return flask.render_template("signup.html")
 
+
+@login_required
+@app.route("/gamepage", methods=["POST", "GET"])
+def gamepage():
+    """gamepage"""
+    return flask.render_template("gamepage.html")
+
+
+@login_required
+@app.route("/main", methods=["POST", "GET"])
+def main():
+    """main"""
+    userid = current_user.id
+    survey_data = Survey.query.filter_by(user_id=userid).first()
+    games = querygames(survey_data, userid)
+    return flask.render_template(
+        "main.html",
+        len=len(games),
+        games=games,
+    )
+
+
 @login_required
 @app.route("/survey", methods=["POST", "GET"])
 def survey():
     """Survey"""
+    userid = current_user.id
+    survey_data = Survey.query.filter_by(user_id=userid).first()
+    if survey_data:
+        return flask.redirect(flask.url_for("main"))
+
+    if flask.request.method == "POST":
+        userid = current_user.id
+        Survey.query.filter_by(user_id=userid).delete()
+        action = flask.request.form["action"]
+        adventure = flask.request.form["adventure"]
+        roleplaying = flask.request.form["roleplaying"]
+        strategy = flask.request.form["strategy"]
+        sports = flask.request.form["sports"]
+        simulation = flask.request.form["simulation"]
+        racing = flask.request.form["racing"]
+        survey_data = Survey(
+            user=userid,
+            action=action,
+            adventure=adventure,
+            roleplaying=roleplaying,
+            strategy=strategy,
+            sports=sports,
+            simulation=simulation,
+            racing=racing,
+        )
+        db.session.add(survey_data)
+        db.session.commit()
+        print(User.survey_data)
+        return flask.redirect(flask.url_for("main"))
+
     return flask.render_template("survey.html")
 
 @login_required
