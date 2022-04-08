@@ -1,3 +1,4 @@
+from turtle import title
 import flask
 from flask_login import (
     LoginManager,
@@ -98,7 +99,15 @@ def signup():
 @app.route("/gamepage", methods=["POST", "GET"])
 def gamepage():
     """gamepage"""
-    return flask.render_template("gamepage.html")
+    image = flask.request.args.get("image")
+    title = flask.request.args.get("title")
+    price = (int(flask.request.args.get("price"))/100)
+    if price==0.0:
+        price = 0
+
+    
+    
+    return flask.render_template("gamepage.html",title = title,price = price, image = image)
 
 
 @login_required
