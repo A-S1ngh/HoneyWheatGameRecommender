@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
 
@@ -8,15 +9,19 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(24), nullable=False)
     email = db.Column(db.String(24), nullable=False)
-    password = db.Column(db.String(32), nullable=False)
+    password = db.Column(db.String(128), nullable=False)
     survey_data = db.relationship("Survey", backref="user", uselist=False)
 
     def __repr__(self):
         return f"<User {self.email}>"
 
-    def __init__(self, email, password):
+    def __init__(self, username, email, password):
         self.email = email
-        self.password = password
+        self.username = username
+        self.password = generate_password_hash(password)
+    
+    def verify_password(self, pwd):
+        return check_password_hash(self.password, pwd)
 
 
 class Survey(db.Model):
