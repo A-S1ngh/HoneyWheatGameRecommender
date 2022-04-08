@@ -19,8 +19,13 @@ load_dotenv(find_dotenv())
 login_manager = LoginManager()
 
 # database still need to be connected to a heroku url
+
 app = flask.Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
+app.secret_key = os.getenv("SECRET_KEY")
+db_url = os.getenv("DATABASE_URL")
+if db_url.startswith("postgres://"):
+    db_url = db_url.replace("postgres://", "postgresql://", 1)
+app.config["SQLALCHEMY_DATABASE_URI"] = db_url
 app.config["SQLALCHEMY_TRACK_MODIFICATION"] = False
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 
@@ -98,5 +103,5 @@ def profile():
 
 if __name__ == "__main__":
     app.run(
-        host=os.getenv("IP", "0.0.0.0"), port=int(os.getenv("PORT", 8080)), debug=True
+        host=os.getenv("IP", "0.0.0.0"), port=int(os.getenv("PORT", 8080)), debug=False
     )
