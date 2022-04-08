@@ -8,7 +8,6 @@ from models import User, Survey, db
 
 
 load_dotenv(find_dotenv())
-# database still need to be connected to a heroku url
 app = flask.Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATION"] = False
@@ -24,7 +23,7 @@ def login():
     """ "login"""
     users = Survey.query.all()
     print(users)
-    querygames()
+    # querygames()
     return flask.render_template("index.html")
 
 
@@ -48,5 +47,5 @@ def profile():
 
 if __name__ == "__main__":
     app.run(
-        host=os.getenv("IP", "0.0.0.0"), port=int(os.getenv("PORT", 8080)), debug=True
+        host=os.getenv("IP", "0.0.0.0"), port=int(os.getenv("PORT", 8080)), debug=False
     )
