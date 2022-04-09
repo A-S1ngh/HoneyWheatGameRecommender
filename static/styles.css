@@ -1,0 +1,29 @@
+.container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.card-img {
+    justify-content: center;
+    align-items: center;
+    margin: 20px;
+    width: 350px;
+    height: 155px;
+}
+
+.grow {
+    transition: 1.5s ease;
+}
+
+.grow:hover {
+    -webkit-transform: scale(1.15);
+    -ms-transform: scale(1.15);
+    transform: scale(1.15);
+    transition: 1.5s ease;
+}
+
+body {
+    background-image: url("bg.png");
+    background-attachment: fixed;
+}
