@@ -1,5 +1,18 @@
 {% extends 'index.html' %}
 {% block content %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css')}}">
+
+<div class="container">
+    
+    <div class="card-img">
+        
+            <img src=" {{image}}" class="grow" width="350" height="155">
+            <h1 style="text-align: center; color: purple;">{{title}}
+            <h2 style="text-align: center; color: purple;">PRICE ${{price}}
+        </a>
+    </div>
+    
+</div>
 
 
 
