@@ -1,3 +1,4 @@
+from turtle import title
 import flask
 from flask_login import (
     LoginManager,
@@ -98,7 +99,14 @@ def signup():
 @app.route("/gamepage", methods=["POST", "GET"])
 def gamepage():
     """gamepage"""
-    return flask.render_template("gamepage.html")
+    print(current_user)
+    print(current_user.email)
+    image = flask.request.args.get("image")
+    title = flask.request.args.get("title")
+    price = (int(flask.request.args.get("price"))/100)
+    if price==0.0:
+        price = 0
+    return flask.render_template("gamepage.html",title = title,price = price, image = image)
 
 
 @login_required
@@ -155,7 +163,28 @@ def survey():
 @app.route("/profile")
 def profile():
     """User Profile"""
-    return flask.render_template("profile.html")
+    userid = current_user.id
+    survey_data = Survey.query.filter_by(user_id=userid).first()
+    print(survey_data.action)
+    user_name = current_user.username
+    email = current_user.email
+    action = survey_data.action
+    adventure = survey_data.adventure
+    roleplaying = survey_data.roleplaying
+    strategy = survey_data.strategy
+    sports = survey_data.sports
+    simulation = survey_data.simulation
+    racing = survey_data.racing
+    return flask.render_template("profile.html",
+    email = email,
+    user_name = user_name,
+    action = action,
+    adventure = adventure,
+    roleplaying = roleplaying,
+    strategy = strategy,
+    sports = sports,
+    simulation = simulation,
+    racing = racing)
 
 
 if __name__ == "__main__":
