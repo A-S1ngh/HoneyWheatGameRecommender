@@ -1,4 +1,4 @@
-from turtle import title
+import os
 import flask
 from flask_login import (
     LoginManager,
@@ -8,9 +8,6 @@ from flask_login import (
     logout_user,
 )
 
-import os
-import requests
-from flask_sqlalchemy import SQLAlchemy
 from dotenv import find_dotenv, load_dotenv
 from steamspy import querygames
 from models import db, User, Survey
@@ -33,7 +30,7 @@ app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 
 db.init_app(app)
 
-login_manager.login_view = "index"
+login_manager.login_view = "login"
 login_manager.init_app(app)
 
 
@@ -45,12 +42,7 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
-
-
-@app.route("/", methods=["POST", "GET"])
+@app.route("/login", methods=["POST", "GET"])
 def login():
     """login"""
     if flask.request.method == "POST":
@@ -59,13 +51,18 @@ def login():
         user = User.query.filter_by(email=email).first()
         # If user exists, login. If not, flash error
         if user and user.verify_password(password):
+            print("HA")
             login_user(user)
             print("WORKS")
-            return flask.redirect(flask.url_for("survey"))
+            return flask.redirect(flask.url_for("main"))
         flask.flash("User does not exist!")
     # GET route
-    return flask.render_template("index.html")
+    return flask.render_template("login.html")
 
+@app.route("/logout", methods=["POST"])
+def logout():
+    logout_user()
+    return flask.redirect(flask.url_for("login"))
 
 @app.route("/signup", methods=["POST", "GET"])
 def signup():
@@ -95,8 +92,8 @@ def signup():
     return flask.render_template("signup.html")
 
 
-@login_required
 @app.route("/gamepage", methods=["POST", "GET"])
+@login_required
 def gamepage():
     """gamepage"""
     print(current_user)
@@ -109,29 +106,27 @@ def gamepage():
     return flask.render_template("gamepage.html",title = title,price = price, image = image)
 
 
+@app.route("/", methods=["POST", "GET"])
 @login_required
-@app.route("/main", methods=["POST", "GET"])
 def main():
     """main"""
     userid = current_user.id
     survey_data = Survey.query.filter_by(user_id=userid).first()
-    games = querygames(survey_data, userid)
-    return flask.render_template(
-        "main.html",
-        len=len(games),
-        games=games,
-    )
+    if survey_data:
+        games = querygames(survey_data)
+        return flask.render_template(
+            "main.html",
+            len=len(games),
+            games=games,
+        )
+    return flask.redirect(flask.url_for("survey"))
 
 
-@login_required
+
 @app.route("/survey", methods=["POST", "GET"])
+@login_required
 def survey():
     """Survey"""
-    userid = current_user.id
-    survey_data = Survey.query.filter_by(user_id=userid).first()
-    if survey_data:
-        return flask.redirect(flask.url_for("main"))
-
     if flask.request.method == "POST":
         userid = current_user.id
         Survey.query.filter_by(user_id=userid).delete()
@@ -159,8 +154,8 @@ def survey():
 
     return flask.render_template("survey.html")
 
-@login_required
 @app.route("/profile")
+@login_required
 def profile():
     """User Profile"""
     userid = current_user.id
@@ -189,5 +184,5 @@ def profile():
 
 if __name__ == "__main__":
     app.run(
-        host=os.getenv("IP", "0.0.0.0"), port=int(os.getenv("PORT", 8080)), debug=False
+        host=os.getenv("IP", "0.0.0.0"), port=int(os.getenv("PORT", "8080")), debug=False
     )

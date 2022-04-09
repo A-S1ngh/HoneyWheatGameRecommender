@@ -19,7 +19,6 @@ class User(UserMixin, db.Model):
         self.email = email
         self.username = username
         self.password = generate_password_hash(password)
-    
     def verify_password(self, pwd):
         return check_password_hash(self.password, pwd)
 
@@ -36,7 +35,8 @@ class Survey(db.Model):
     racing = db.Column(db.Integer)
 
     def __init__(
-        self, action, adventure, roleplaying, strategy, sports, simulation, racing, user
+        self, action, adventure, roleplaying,
+         strategy, sports, simulation, racing, user
     ):
         self.action = action
         self.adventure = adventure
@@ -46,3 +46,4 @@ class Survey(db.Model):
         self.simulation = simulation
         self.racing = racing
         self.user_id = user
+        

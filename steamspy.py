@@ -10,7 +10,7 @@ GENRE_URL = os.getenv("GENRE_URL")
 DETAILS_URL = os.getenv("DETAILS_URL")
 
 
-def querygames(survey_data, userid):
+def querygames(survey_data):
     """querygames"""
     user_data = survey_data #pull ratings for each genre for the current user
     action = user_data.action
@@ -20,7 +20,7 @@ def querygames(survey_data, userid):
     sports = user_data.sports
     simulation = user_data.simulation
     racing = user_data.racing
-    genres = {        
+    genres = {
         "action": action,
         "adventure": adventure,
         "roleplaying": roleplaying,
@@ -59,12 +59,11 @@ def querygames(survey_data, userid):
                 ]
     if games:
         return games
-    else:
-        current_game = {}
-        poster_path = IMAGE_URL + "1222670" + "/header.jpg"
-        current_game["image"] = poster_path
-        current_game["title"] = "The Sim's 4"
-        current_game["price"] = 4000
-        current_game["details"] = DETAILS_URL + "1222670"
-        games.append(current_game)
-        return games
+    current_game = {}
+    poster_path = IMAGE_URL + "1222670" + "/header.jpg"
+    current_game["image"] = poster_path
+    current_game["title"] = "The Sim's 4"
+    current_game["price"] = 4000
+    current_game["details"] = DETAILS_URL + "1222670"
+    games.append(current_game)
+    return games

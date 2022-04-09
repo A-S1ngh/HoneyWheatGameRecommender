@@ -1,0 +1,14 @@
+[MASTER]
+disable=
+    C0114, # missing-module-docstring
+    C0116, # missing-function-docstring
+    E1101,
+    C0115,
+    R0903,
+    R0902, # too many instance attributes
+    R0913, # too many args
+    R0914,
+    C0206, #enumeration tips
+    C0201,
+    C0200,
+    E0401

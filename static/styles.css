@@ -27,3 +27,9 @@ body {
     background-image: url("bg.png");
     background-attachment: fixed;
 }
+#logoutButton {
+    margin-top: 6px;
+    border: none;
+    background-color: rgb(255, 217, 0);
+    border-radius: 20px;
+}

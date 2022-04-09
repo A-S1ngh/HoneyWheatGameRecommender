@@ -1,8 +1,6 @@
 import unittest
 import os
-import flask
 from app import app
-from models import db
 
 
 class GameRecommenderTests(unittest.TestCase):
