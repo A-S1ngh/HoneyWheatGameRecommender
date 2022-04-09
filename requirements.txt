@@ -4,4 +4,3 @@ Flask
 flask-login
 psycopg2-binary
 Flask-SQLAlchemy
-tkinter
