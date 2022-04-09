@@ -1,4 +1,3 @@
-from turtle import title
 import flask
 from flask_login import (
     LoginManager,
