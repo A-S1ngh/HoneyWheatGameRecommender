@@ -113,7 +113,7 @@ def gamepage():
 @app.route("/main", methods=["POST", "GET"])
 def main():
     """main"""
-    if survey_data
+    if survey_data:
         userid = current_user.id
         survey_data = Survey.query.filter_by(user_id=userid).first()
         games = querygames(survey_data, userid)
