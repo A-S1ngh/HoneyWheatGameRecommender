@@ -20,26 +20,25 @@
         <div class="collapse navbar-collapse" id="navbarContent">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a href="#" class="nav-link">My Recommendations</a>
+                    <a href="/" class="nav-link">My Recommendations</a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('profile') }}" class="nav-link">My Profile</a>
                 </li>
+                {% if current_user.is_authenticated %}
+                <li class="nav-item">
+                    <form id="logForm" action="/logout" method="POST">
+                        <button id="logoutButton" type="submit">Log Out</button>
+                    </form>
+                </li>
+                {% endif %}
+
             </ul>
         </div>
     </nav>
     <br><br>
     {% block content %}
-    <h3 id="login-text" style="text-align: center; color: red;">Login</h3><br>
-    <div class="login-class" style="text-align: center;">
-        <form action="#" method='POST' id='login-form'>
-            <input type="text" placeholder="Email" name='email'><br><br>
-            <input type="password" placeholder="Password" name='password'><br><br>
-            <input type="submit" value='Log In'>
-        </form>
-        <br>
-        <a href="{{ url_for('signup') }}">Don't have an account? Sign up here!</a>
-    </div>
+    
     {% endblock %}
 </body>
 

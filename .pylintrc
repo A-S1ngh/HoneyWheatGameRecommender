@@ -1,0 +1,10 @@
+[MASTER]
+disable=
+    W0107, # We need pass on our teardown method to continue without error
+    R0914, # Necessary variables
+    C0206, # Does not work using .items()
+    C0200, # This implementation has been reliable, no issues
+    E1101, # Pylint does not recognize the database variable
+    R0902, # Necessary instance attributes
+    R0913, # Necessary arguments
+    R0903, # No public methods needed
