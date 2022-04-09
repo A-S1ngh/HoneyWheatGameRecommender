@@ -1,3 +1,4 @@
+from turtle import title
 import flask
 from flask_login import (
     LoginManager,
@@ -38,6 +39,7 @@ login_manager.init_app(app)
 
 with app.app_context():
     db.create_all()
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -98,21 +100,28 @@ def signup():
 @app.route("/gamepage", methods=["POST", "GET"])
 def gamepage():
     """gamepage"""
-    
-    return flask.render_template("gamepage.html")
+    print(current_user)
+    print(current_user.email)
+    image = flask.request.args.get("image")
+    title = flask.request.args.get("title")
+    price = int(flask.request.args.get("price")) / 100
+    if price == 0.0:
+        price = 0
+    return flask.render_template("gamepage.html", title=title, price=price, image=image)
 
 
 @login_required
 @app.route("/main", methods=["POST", "GET"])
 def main():
     """main"""
-    userid = current_user.id
-    survey_data = Survey.query.filter_by(user_id=userid).first()
-    games = querygames(survey_data, userid)
-    return flask.render_template(
-        "main.html",
-        len=len(games),
-        games=games,
+    if survey_data
+        userid = current_user.id
+        survey_data = Survey.query.filter_by(user_id=userid).first()
+        games = querygames(survey_data, userid)
+        return flask.render_template(
+            "main.html",
+            len=len(games),
+            games=games,
     )
 
 
@@ -122,10 +131,10 @@ def survey():
     """Survey"""
     userid = current_user.id
     survey_data = Survey.query.filter_by(user_id=userid).first()
-    if survey_data:
-        return flask.redirect(flask.url_for("main"))
+    if survey_data and not flag:
+        return flask.redirect(flask.url_for("main"))O
 
-    if flask.request.method == "POST":
+    if flask.request.method == "POST" or flag:
         userid = current_user.id
         Survey.query.filter_by(user_id=userid).delete()
         action = flask.request.form["action"]
@@ -152,11 +161,35 @@ def survey():
 
     return flask.render_template("survey.html")
 
+
 @login_required
 @app.route("/profile")
 def profile():
     """User Profile"""
-    return flask.render_template("profile.html")
+    userid = current_user.id
+    survey_data = Survey.query.filter_by(user_id=userid).first()
+    print(survey_data.action)
+    user_name = current_user.username
+    email = current_user.email
+    action = survey_data.action
+    adventure = survey_data.adventure
+    roleplaying = survey_data.roleplaying
+    strategy = survey_data.strategy
+    sports = survey_data.sports
+    simulation = survey_data.simulation
+    racing = survey_data.racing
+    return flask.render_template(
+        "profile.html",
+        email=email,
+        user_name=user_name,
+        action=action,
+        adventure=adventure,
+        roleplaying=roleplaying,
+        strategy=strategy,
+        sports=sports,
+        simulation=simulation,
+        racing=racing,
+    )
 
 
 if __name__ == "__main__":
