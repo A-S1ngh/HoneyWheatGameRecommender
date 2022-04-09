@@ -98,6 +98,7 @@ def signup():
 @app.route("/gamepage", methods=["POST", "GET"])
 def gamepage():
     """gamepage"""
+    
     return flask.render_template("gamepage.html")
 
 
