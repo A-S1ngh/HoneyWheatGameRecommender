@@ -54,9 +54,7 @@ def login():
         user = User.query.filter_by(email=email).first()
         # If user exists, login. If not, flash error
         if user and user.verify_password(password):
-            print("HA")
             login_user(user)
-            print("WORKS")
             return flask.redirect(flask.url_for("main"))
         flask.flash("User does not exist!")
     # GET route
