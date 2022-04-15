@@ -27,3 +27,7 @@ body {
     background-image: url("bgif.gif");
     background-attachment: fixed;
 }
+
+h3 {
+    font-family: 'PF Tempesta Seven', sans-serif;
+}
