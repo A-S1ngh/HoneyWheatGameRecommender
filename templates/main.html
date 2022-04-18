@@ -5,7 +5,7 @@
 <div class="container">
     {%for game in games%}
     <div class="card-img">
-        <a href="{{ url_for('gamepage',image=game.image,title=game.title,price=game.price)}}">
+        <a href="{{ url_for('gamepage',image=game.image,title=game.title,price=game.price,gameid=game.gameid) }}">
             <img src=" {{game.image}}" class="grow" width="350" height="155">
         </a>
     </div>

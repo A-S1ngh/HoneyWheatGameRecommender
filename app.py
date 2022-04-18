@@ -103,9 +103,12 @@ def gamepage():
     image = flask.request.args.get("image")
     title = flask.request.args.get("title")
     price = int(flask.request.args.get("price")) / 100
+    gameid = int(flask.request.args.get("gameid"))
     if price == 0.0:
         price = 0
-    return flask.render_template("gamepage.html", title=title, price=price, image=image)
+    return flask.render_template(
+        "gamepage.html", title=title, price=price, image=image, gameid=gameid
+    )
 
 
 @app.route("/", methods=["POST", "GET"])
@@ -116,11 +119,7 @@ def main():
     survey_data = Survey.query.filter_by(user_id=userid).first()
     if survey_data:
         games = querygames(survey_data)
-        return flask.render_template(
-            "main.html",
-            len=len(games),
-            games=games,
-        )
+        return flask.render_template("main.html", len=len(games), games=games,)
     return flask.redirect(flask.url_for("survey"))
 
 

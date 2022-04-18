@@ -54,6 +54,7 @@ def querygames(survey_data):
                 current_game["image"] = poster_path
                 current_game["title"] = str(response_json[appid[i]]["name"])
                 current_game["price"] = int(response_json[appid[i]]["price"])
+                current_game["gameid"] = appid[i]
                 games.append(current_game)
                 games = [
                     dict(tupleized)
