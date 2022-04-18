@@ -1,3 +1,4 @@
+"""Steam Spy API Functions"""
 import os
 import requests
 from dotenv import find_dotenv, load_dotenv
@@ -10,9 +11,9 @@ GENRE_URL = os.getenv("GENRE_URL")
 DETAILS_URL = os.getenv("DETAILS_URL")
 
 
-def querygames(survey_data, userid):
+def querygames(survey_data):
     """querygames"""
-    user_data = survey_data #pull ratings for each genre for the current user
+    user_data = survey_data  # pull ratings for each genre for the current user
     action = user_data.action
     adventure = user_data.adventure
     roleplaying = user_data.roleplaying
@@ -20,7 +21,7 @@ def querygames(survey_data, userid):
     sports = user_data.sports
     simulation = user_data.simulation
     racing = user_data.racing
-    genres = {        
+    genres = {
         "action": action,
         "adventure": adventure,
         "roleplaying": roleplaying,
@@ -31,8 +32,7 @@ def querygames(survey_data, userid):
     }
     games = []
 
-    for genrename in genres.keys():
-        print(genres[genrename])
+    for genrename in genres:
         if genres[genrename] > 1:  # No results for genres with a 1
             genre = GENRE_URL + genrename  # create the api call to games in this genre
             response = requests.get(genre)
@@ -45,7 +45,9 @@ def querygames(survey_data, userid):
                 results = slice(0, 3)
             appid = list(response_json)[results]
             for i in range(len(appid)):  # work gets done for each genre call
-                current_game = {} # below code adds all game details to its own dictionary
+                current_game = (
+                    {}
+                )  # below code adds all game details to its own dictionary
                 details_path = DETAILS_URL + str(appid[i])
                 current_game["details"] = details_path
                 poster_path = IMAGE_URL + str(appid[i]) + "/header.jpg"
@@ -59,12 +61,11 @@ def querygames(survey_data, userid):
                 ]
     if games:
         return games
-    else:
-        current_game = {}
-        poster_path = IMAGE_URL + "1222670" + "/header.jpg"
-        current_game["image"] = poster_path
-        current_game["title"] = "The Sim's 4"
-        current_game["price"] = 4000
-        current_game["details"] = DETAILS_URL + "1222670"
-        games.append(current_game)
-        return games
+    current_game = {}
+    poster_path = IMAGE_URL + "1222670" + "/header.jpg"
+    current_game["image"] = poster_path
+    current_game["title"] = "The Sim's 4"
+    current_game["price"] = 4000
+    current_game["details"] = DETAILS_URL + "1222670"
+    games.append(current_game)
+    return games

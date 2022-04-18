@@ -29,24 +29,29 @@
         color: white;
     }
 </style>
-
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-warning navbar-fixed-top">
-        <div class="container">
-            <a href="#" class="navbar-brand">
-                <img src="static/bread.png" alt="" width="30" height="30">
-                Honey Wheat Game Recommender
-            </a>
-            <div class="collapse navbar-collapse" id="navbarContent">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">My Recommendations</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ url_for('profile') }}" class="nav-link">My Profile</a>
-                    </li>
-                </ul>
-            </div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-warning">
+        <a href="#" class="navbar-brand">
+            <img src="static/bread.png" alt="" width="30" height="30">
+            Honey Wheat Game Recommender
+        </a>
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a href="/" class="nav-link">My Recommendations</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('profile') }}" class="nav-link">My Profile</a>
+                </li>
+                {% if current_user.is_authenticated %}
+                <li class="nav-item">
+                    <form id="logForm" action="/logout" method="POST">
+                        <button id="logoutButton" type="submit">Log Out</button>
+                    </form>
+                </li>
+                {% endif %}
+
+            </ul>
         </div>
     </nav>
     <br><br>
