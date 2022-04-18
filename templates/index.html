@@ -18,23 +18,34 @@
     h2 {
         font-family: 'PF Tempesta Seven', sans-serif;
     }
+
+    input[type="text"],
+    input[type="password"] {
+        background: transparent;
+        border-radius: 25px;
+        border-style: double;
+        border-color: yellow;
+        color: white;
+    }
 </style>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-warning">
-        <a href="#" class="navbar-brand">
-            <img src="static/bread.png" alt="" width="30" height="30">
-            Honey Wheat Game Recommender
-        </a>
-        <div class="collapse navbar-collapse" id="navbarContent">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a href="#" class="nav-link">My Recommendations</a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('profile') }}" class="nav-link">My Profile</a>
-                </li>
-            </ul>
+    <nav class="navbar navbar-expand-lg navbar-light bg-warning navbar-fixed-top">
+        <div class="container">
+            <a href="#" class="navbar-brand">
+                <img src="static/bread.png" alt="" width="30" height="30">
+                Honey Wheat Game Recommender
+            </a>
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">My Recommendations</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('profile') }}" class="nav-link">My Profile</a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
     <br><br>
@@ -43,8 +54,8 @@
     <br>
     <div class="login-class" style="text-align: center;">
         <form action="#" method='POST' id='login-form'>
-            <input type="text" placeholder="Email" name='email'><br><br>
-            <input type="password" placeholder="Password" name='password'><br><br>
+            <input type="text" placeholder="  Email" name='email'><br><br>
+            <input type="password" placeholder="  Password" name='password'><br><br>
             <input type="submit" value='Log In'>
         </form>
         <br>
