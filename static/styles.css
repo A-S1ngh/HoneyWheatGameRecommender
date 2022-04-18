@@ -24,9 +24,10 @@
 }
 
 body {
-    background-image: url("bg.png");
+    background-image: url("bgif.gif");
     background-attachment: fixed;
 }
+
 #logoutButton {
     margin-top: 6px;
     border: none;
