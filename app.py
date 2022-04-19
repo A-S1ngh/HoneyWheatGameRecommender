@@ -21,7 +21,7 @@ login_manager = LoginManager()
 
 # database still need to be connected to a heroku url
 game_list = {}
-reviews = None
+reviews = []  
 
 app = flask.Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
@@ -97,7 +97,8 @@ def signup():
     # GET route
     return flask.render_template("signup.html")
 
-
+def set(game):
+    reviews.append(game) 
 @login_required
 @app.route("/gamepage", methods=["POST", "GET"])
 def gamepage():
@@ -107,13 +108,14 @@ def gamepage():
     image = flask.request.args.get("image")
     title = flask.request.args.get("title")
     price = int(flask.request.args.get("price")) / 100
-    reviews = flask.request.args.get("reviews")
+    
     for game in game_list:
+        
         if game["title"] == title:
+            global reviews
+            reviews = game["reviews"]
             
-    print("____________________")
-    print(len(reviews))
-    print("____________________")
+            
     if price == 0.0:
         price = 0
     return flask.render_template(
@@ -133,6 +135,7 @@ def main():
     userid = current_user.id
     survey_data = Survey.query.filter_by(user_id=userid).first()
     games = querygames(survey_data, userid)
+    global game_list
     game_list = games
     
     return flask.render_template(

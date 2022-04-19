@@ -8,15 +8,19 @@
         
             <img src=" {{image}}" class="grow" width="350" height="155">
             <h1 style="text-align: center; color: purple;">{{title}}</h1>
-            <h2 style="text-align: center; color: purple;">PRICE ${{price}} 
+            <h2 style="text-align: center; color: purple;">PRICE ${{price}} </h2>
             
             
-                {%for i in range(0, len)%}
-                {{reviews[i]}}------------------------------------------
-                {%endfor%}
         
     </div>
     
 </div>
-
+<div>
+<h3 style="text-align: left; color: powderblue;">
+    {%for i in range(0, len)%}
+    REVIEW {{[i+1]}}:<br>
+    {{reviews[i]}}
+    <br>
+    {%endfor%}</h3>
+</div>
 {% endblock %}
