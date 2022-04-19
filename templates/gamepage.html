@@ -5,13 +5,25 @@
 <div class="container">
 
     <div class="card-img">
-
         <img src=" {{image}}" class="grow" width="350" height="155">
         <h1 style="text-align: center; color: yellow; -webkit-text-stroke: 2px black;">{{title}}
             <h2 style="text-align: center; color: yellow; -webkit-text-stroke: 2px black;">PRICE ${{price}}
-                </a>
-                <br><br><button>Game ID: {{ gameid }}</button>
+                <br><br>
+                <button class="btn" id='favoritebutton' style="background-color: {{color}};">{{message}}</button>
     </div>
+    <h4 hidden id="gameid">{{gameid}}</h4>
 
 </div>
+<script>
+    document.getElementById("favoritebutton").addEventListener("click", function () {
+        var gameid = document.getElementById("gameid").innerHTML;
+        fetch('/favorite', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(gameid)
+        }).then(res => console.log(res));
+    });
+</script>
 {% endblock %}
