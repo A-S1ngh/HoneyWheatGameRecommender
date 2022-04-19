@@ -147,6 +147,12 @@ def favorite():
     db.session.commit()
 
 
+@app.route("/favoritespage", methods=["POST", "GET"])
+@login_required
+def favoritespage():
+    return flask.render_template("favorites.html")
+
+
 @app.route("/", methods=["POST", "GET"])
 @login_required
 def main():

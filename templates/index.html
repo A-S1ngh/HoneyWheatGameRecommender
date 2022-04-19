@@ -39,13 +39,16 @@
         </a>
         <div class="collapse navbar-collapse" id="navbarContent">
             <ul class="navbar-nav ms-auto">
+                {% if current_user.is_authenticated %}
                 <li class="nav-item">
-                    <a href="/" class="nav-link">My Recommendations</a>
+                    <a href="/" class="nav-link">Recommendations</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/favoritespage">My Favorites</a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('profile') }}" class="nav-link">My Profile</a>
                 </li>
-                {% if current_user.is_authenticated %}
                 <li class="nav-item">
                     <form id="logForm" action="/logout" method="POST">
                         <button id="logoutButton" type="submit">Log Out</button>
