@@ -44,6 +44,8 @@ def querygames(survey_data, userid):
             else:  # Covers 4-2
                 results = slice(0, 3)
             appid = list(response_json)[results]
+            for j in appid:
+                print(j)
             for i in range(len(appid)):  # work gets done for each genre call
                 current_game = {} # below code adds all game details to its own dictionary
                 details_path = DETAILS_URL + str(appid[i])

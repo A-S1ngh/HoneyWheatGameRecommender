@@ -7,6 +7,7 @@
     <div class="card-img">
         <a href="{{ url_for('gamepage',image=game.image,title=game.title,price=game.price)}}">
             <img src=" {{game.image}}" class="grow" width="350" height="155">
+            <h2 style="text-align: center; color: powderblue;"> {{game.title}}</h2>
         </a>
     </div>
     {%endfor%}
