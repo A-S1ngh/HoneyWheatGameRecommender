@@ -8,7 +8,7 @@ load_dotenv(find_dotenv())
 IMAGE_URL = os.getenv("IMAGE_URL")
 GENRE_URL = os.getenv("GENRE_URL")
 DETAILS_URL = os.getenv("DETAILS_URL")
-
+REVIEWS_URL = os.getenv("REVIEWS_URL")
 
 def querygames(survey_data, userid):
     """querygames"""
@@ -48,6 +48,15 @@ def querygames(survey_data, userid):
                 print(j)
             for i in range(len(appid)):  # work gets done for each genre call
                 current_game = {} # below code adds all game details to its own dictionary
+                review_list = []
+                GAME_REVIEW_URl = REVIEWS_URL + str(appid[i]) + "?json=1"
+                response = requests.get(GAME_REVIEW_URl)
+                data = response.json()
+                for j in data['reviews']:
+                    review_list.append(j['review'])
+
+                
+                current_game["reviews"]= tuple (review_list)
                 details_path = DETAILS_URL + str(appid[i])
                 current_game["details"] = details_path
                 poster_path = IMAGE_URL + str(appid[i]) + "/header.jpg"
@@ -68,5 +77,10 @@ def querygames(survey_data, userid):
         current_game["title"] = "The Sim's 4"
         current_game["price"] = 4000
         current_game["details"] = DETAILS_URL + "1222670"
+        review = REVIEWS_URL + "1222670" + "?json=1"
+        response = requests.get(review)
+        reviews = response.json()
+        print(reviews)
+           
         games.append(current_game)
         return games

@@ -7,13 +7,16 @@
     <div class="card-img">
         
             <img src=" {{image}}" class="grow" width="350" height="155">
-            <h1 style="text-align: center; color: purple;">{{title}}
-            <h2 style="text-align: center; color: purple;">PRICE ${{price}}
-        </a>
+            <h1 style="text-align: center; color: purple;">{{title}}</h1>
+            <h2 style="text-align: center; color: purple;">PRICE ${{price}} 
+            
+            
+                {%for i in range(0, len)%}
+                {{reviews[i]}}------------------------------------------
+                {%endfor%}
+        
     </div>
     
 </div>
-
-
 
 {% endblock %}

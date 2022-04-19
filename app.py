@@ -20,6 +20,8 @@ load_dotenv(find_dotenv())
 login_manager = LoginManager()
 
 # database still need to be connected to a heroku url
+game_list = {}
+reviews = None
 
 app = flask.Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
@@ -39,6 +41,7 @@ login_manager.init_app(app)
 
 with app.app_context():
     db.create_all()
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -103,10 +106,24 @@ def gamepage():
     print(current_user.email)
     image = flask.request.args.get("image")
     title = flask.request.args.get("title")
-    price = (int(flask.request.args.get("price"))/100)
-    if price==0.0:
+    price = int(flask.request.args.get("price")) / 100
+    reviews = flask.request.args.get("reviews")
+    for game in game_list:
+        if game["title"] == title:
+            
+    print("____________________")
+    print(len(reviews))
+    print("____________________")
+    if price == 0.0:
         price = 0
-    return flask.render_template("gamepage.html",title = title,price = price, image = image)
+    return flask.render_template(
+        "gamepage.html",
+        title=title,
+        price=price,
+        image=image,
+        reviews=reviews,
+        len=len(reviews),
+    )
 
 
 @login_required
@@ -116,6 +133,8 @@ def main():
     userid = current_user.id
     survey_data = Survey.query.filter_by(user_id=userid).first()
     games = querygames(survey_data, userid)
+    game_list = games
+    
     return flask.render_template(
         "main.html",
         len=len(games),
@@ -159,6 +178,7 @@ def survey():
 
     return flask.render_template("survey.html")
 
+
 @login_required
 @app.route("/profile")
 def profile():
@@ -175,16 +195,18 @@ def profile():
     sports = survey_data.sports
     simulation = survey_data.simulation
     racing = survey_data.racing
-    return flask.render_template("profile.html",
-    email = email,
-    user_name = user_name,
-    action = action,
-    adventure = adventure,
-    roleplaying = roleplaying,
-    strategy = strategy,
-    sports = sports,
-    simulation = simulation,
-    racing = racing)
+    return flask.render_template(
+        "profile.html",
+        email=email,
+        user_name=user_name,
+        action=action,
+        adventure=adventure,
+        roleplaying=roleplaying,
+        strategy=strategy,
+        sports=sports,
+        simulation=simulation,
+        racing=racing,
+    )
 
 
 if __name__ == "__main__":
