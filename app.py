@@ -56,7 +56,8 @@ def login():
         if user and user.verify_password(password):
             login_user(user)
             return flask.redirect(flask.url_for("main"))
-        flask.flash("User does not exist!")
+        error = "User does not exist or password is incorrect."
+        return flask.render_template("login.html", error=error)
     # GET route
     return flask.render_template("login.html")
 
@@ -75,6 +76,15 @@ def signup():
         email = flask.request.form["email"]
         username = flask.request.form["username"]
         password = flask.request.form["password"]
+        if len(email) > 64:
+            error = "Length of email is too long."
+            return flask.render_template("signup.html", error=error)
+        elif len(username) > 24:
+            error = "Length of username is too long."
+            return flask.render_template("signup.html", error=error)
+        elif len(password) > 128:
+            error = "Length of password is too long."
+            return flask.render_template("signup.html", error=error)
         if len(email.strip()) >= 3:
             user = User(username, email, password)
             existing = User.query.filter_by(email=email).all()
@@ -86,12 +96,12 @@ def signup():
                 login_user(user)
                 return flask.redirect(flask.url_for("survey"))
             # If taken, flash error
-            flask.flash("email already exists!")
+            error = "email already exists!"
         else:
             # If empty email, flash error
-            flask.flash("Empty emails are not allowed!")
+            error = "Empty emails are not allowed!"
         # Redirect to signup if any errors
-        return flask.redirect(flask.url_for("signup"))
+        return flask.render_template("signup.html", error=error)
     # GET route
     return flask.render_template("signup.html")
 
