@@ -32,6 +32,7 @@
 </style>
 
 <body>
+    <div class="page-wrapper">
     <nav class="navbar navbar-expand-lg navbar-light bg-warning">
         <a href="#" class="navbar-brand">
             <img src="static/bread.png" alt="" width="30" height="30">
@@ -39,8 +40,13 @@
         </a>
         <div class="collapse navbar-collapse" id="navbarContent">
             <ul class="navbar-nav ms-auto">
+                {% if not current_user.isauthenticated %}
                 <li class="nav-item">
-                    <a href="/" class="nav-link">My Recommendations</a>
+                    <a href="{{ url_for('login') }}" class="nav-link">Log In</a>
+                </li>
+                {% endif %}
+                <li class="nav-item">
+                    <a href="/main" class="nav-link">My Recommendations</a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('profile') }}" class="nav-link">My Profile</a>
@@ -78,6 +84,7 @@
         <br>
         <a href="{{ url_for('signup') }}">Don't have an account? Sign up here!</a>
     </div>
+</div>
     {% endblock %}
 </body>
 

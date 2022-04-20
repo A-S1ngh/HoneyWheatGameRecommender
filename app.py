@@ -118,7 +118,7 @@ def gamepage():
     return flask.render_template("gamepage.html", title=title, price=price, image=image)
 
 
-@app.route("/", methods=["POST", "GET"])
+@app.route("/main", methods=["POST", "GET"])
 @login_required
 def main():
     """main"""
@@ -133,6 +133,11 @@ def main():
         )
     return flask.redirect(flask.url_for("survey"))
 
+@app.route("/", methods=["POST", "GET"])
+def landing():
+    """Landing Page"""
+    
+    return flask.render_template("landing.html")
 
 @app.route("/survey", methods=["POST", "GET"])
 @login_required

@@ -1,0 +1,20 @@
+{% extends 'index.html' %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css')}}">
+
+<div class="about-container">
+    <h2 class="title">Welcome to HoneyWheat</h2><br><br>
+    <div>Honey Wheat is a game recommendation app powered by both the Steam and SteamSpy APIs.</div>
+    <div>Use our app to find your next 3am grind.</div><br><br>
+    <div class="about">
+    <h4 class=>Created by:</h4>
+        <ul>
+            <li>Abhi Singh</li>
+            <li>Kielan Dixon</li>
+            <li>Mustafa Ali</li>
+            <li>Simeon Landers</li>
+        </ul>
+    </div>
+</div>
+
+{% endblock %}
