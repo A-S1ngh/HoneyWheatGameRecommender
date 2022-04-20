@@ -1,13 +1,15 @@
 {% extends 'index.html' %}
 {% block content %}
-<h3 id="login-text" style="text-align: center; color: red;">Login</h3><br>
-    <div class="login-class" style="text-align: center;">
+    <div id="loginContainer" style="text-align: center;">
+        <h3 id="login-text" style="text-align: center; color: red;">Login</h3>
         <form action="/login" method='POST' id='login-form'>
             <input type="text" placeholder="Email" name='email'><br><br>
             <input type="password" placeholder="Password" name='password'><br><br>
-            <input type="submit" value='Log In'>
+            <input id="loginButton" type="submit" value='Log In'>
         </form>
         <br>
         <a href="{{ url_for('signup') }}">Don't have an account? Sign up here!</a>
     </div>
+    <img id="loading" src="../static/loading.gif" alt="">
+    <script type="text/javascript" src="{{ url_for('static', filename='loading.js') }}"></script>
 {% endblock %}
