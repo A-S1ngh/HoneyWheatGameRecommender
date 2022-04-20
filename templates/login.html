@@ -1,13 +1,21 @@
 {% extends 'index.html' %}
 {% block content %}
-<h3 id="login-text" style="text-align: center; color: red;">Login</h3><br>
-    <div class="login-class" style="text-align: center;">
-        <form action="/login" method='POST' id='login-form'>
-            <input type="text" placeholder="Email" name='email'><br><br>
-            <input type="password" placeholder="Password" name='password'><br><br>
-            <input type="submit" value='Log In'>
-        </form>
-        <br>
-        <a href="{{ url_for('signup') }}">Don't have an account? Sign up here!</a>
-    </div>
+<div id="login-class" style="text-align: center;">
+    <h3 id="login-text" style="text-align: center; color: red;">Login</h3><br>
+    {% if error %}
+    <p id="login-text" style="text-align: center; color: red;"><strong>Error: </strong>{{ error }}</p>
+    {% endif %}
+    <form action="/login" method='POST' id='login-form'>
+        <input type="email" placeholder="Email" name='email'><br><br>
+        <input type="password" placeholder="Password" name='password'><br><br>
+        <input id="loginButton" type="submit" value='Log In'>
+    </form>
+    <br>
+    <a href="{{ url_for('signup') }}">Don't have an account? Sign up here!</a>
+    <script type="text/javascript" src="{{ url_for('static', filename='loading.js') }}"></script>
+</div>
+<img id="loading" src="../static/loading.gif" alt="">
+
+
 {% endblock %}
+

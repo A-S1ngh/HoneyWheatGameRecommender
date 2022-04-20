@@ -19,6 +19,8 @@ load_dotenv(find_dotenv())
 login_manager = LoginManager()
 
 # database still need to be connected to a heroku url
+game_list = {}
+reviews = []  
 
 app = flask.Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
@@ -57,7 +59,8 @@ def login():
         if user and user.verify_password(password):
             login_user(user)
             return flask.redirect(flask.url_for("main"))
-        flask.flash("User does not exist!")
+        error = "User does not exist or password is incorrect."
+        return flask.render_template("login.html", error=error)
     # GET route
     return flask.render_template("login.html")
 
@@ -76,6 +79,15 @@ def signup():
         email = flask.request.form["email"]
         username = flask.request.form["username"]
         password = flask.request.form["password"]
+        if len(email) > 64:
+            error = "Length of email is too long."
+            return flask.render_template("signup.html", error=error)
+        elif len(username) > 24:
+            error = "Length of username is too long."
+            return flask.render_template("signup.html", error=error)
+        elif len(password) > 128:
+            error = "Length of password is too long."
+            return flask.render_template("signup.html", error=error)
         if len(email.strip()) >= 3:
             user = User(username, email, password)
             existing = User.query.filter_by(email=email).all()
@@ -87,12 +99,12 @@ def signup():
                 login_user(user)
                 return flask.redirect(flask.url_for("survey"))
             # If taken, flash error
-            flask.flash("email already exists!")
+            error = "email already exists!"
         else:
             # If empty email, flash error
-            flask.flash("Empty emails are not allowed!")
+            error = "Empty emails are not allowed!"
         # Redirect to signup if any errors
-        return flask.redirect(flask.url_for("signup"))
+        return flask.render_template("signup.html", error=error)
     # GET route
     return flask.render_template("signup.html")
 
@@ -118,6 +130,13 @@ def gamepage():
         color = "red"
     if price != "FREE":
         price = int(price) / 100
+    price = int(flask.request.args.get("price")) / 100
+    for game in game_list:
+        if game["title"] == title:
+            global reviews
+            reviews = game["reviews"]
+    if price == 0.0:
+        price = 0
     return flask.render_template(
         "gamepage.html",
         title=title,
@@ -126,6 +145,8 @@ def gamepage():
         gameid=gameid,
         message=message,
         color=color,
+        reviews=reviews,
+        len=len(reviews)
     )
 
 
@@ -163,16 +184,33 @@ def favoritespage():
     )
 
 
-@app.route("/", methods=["POST", "GET"])
+
+@app.route("/main", methods=["POST", "GET"])
 @login_required
 def main():
     """main"""
     userid = current_user.id
     survey_data = Survey.query.filter_by(user_id=userid).first()
+
     if survey_data:
         games = querygames(survey_data)
-        return flask.render_template("main.html", len=len(games), games=games,)
+        global game_list
+        game_list = games
+        return flask.render_template(
+            "main.html",
+            len=len(games),
+            games=games,
+        )
     return flask.redirect(flask.url_for("survey"))
+
+
+
+@app.route("/", methods=["POST", "GET"])
+def landing():
+    """Landing Page"""
+
+    return flask.render_template("landing.html")
+
 
 
 @app.route("/survey", methods=["POST", "GET"])
@@ -206,33 +244,36 @@ def survey():
     return flask.render_template("survey.html")
 
 
+
 @app.route("/profile")
 @login_required
 def profile():
     """User Profile"""
     userid = current_user.id
     survey_data = Survey.query.filter_by(user_id=userid).first()
-    user_name = current_user.username
-    email = current_user.email
-    action = survey_data.action
-    adventure = survey_data.adventure
-    roleplaying = survey_data.roleplaying
-    strategy = survey_data.strategy
-    sports = survey_data.sports
-    simulation = survey_data.simulation
-    racing = survey_data.racing
-    return flask.render_template(
-        "profile.html",
-        email=email,
-        user_name=user_name,
-        action=action,
-        adventure=adventure,
-        roleplaying=roleplaying,
-        strategy=strategy,
-        sports=sports,
-        simulation=simulation,
-        racing=racing,
-    )
+    if survey_data:
+        user_name = current_user.username
+        email = current_user.email
+        action = survey_data.action
+        adventure = survey_data.adventure
+        roleplaying = survey_data.roleplaying
+        strategy = survey_data.strategy
+        sports = survey_data.sports
+        simulation = survey_data.simulation
+        racing = survey_data.racing
+        return flask.render_template(
+            "profile.html",
+            email=email,
+            user_name=user_name,
+            action=action,
+            adventure=adventure,
+            roleplaying=roleplaying,
+            strategy=strategy,
+            sports=sports,
+            simulation=simulation,
+            racing=racing,
+        )
+    return flask.redirect(flask.url_for("survey"))
 
 
 if __name__ == "__main__":

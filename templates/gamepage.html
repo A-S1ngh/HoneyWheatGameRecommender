@@ -1,6 +1,6 @@
 {% extends 'index.html' %}
 {% block content %}
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css')}}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles2.css')}}">
 
 <div class="container">
 
@@ -13,6 +13,16 @@
     </div>
     <h4 hidden id="gameid">{{gameid}}</h4>
 
+</div>
+<div>
+    <br> <br> <br>
+    {%for i in range(0, len)%}
+    <div class="review-card">
+        <h4> REVIEW {{i+1}}</h4>
+        <p>{{reviews[i]}}</p>
+    </div>
+   
+    {%endfor%}
 </div>
 <script>
     document.getElementById("favoritebutton").addEventListener("click", function () {
