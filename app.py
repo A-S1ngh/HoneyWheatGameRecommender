@@ -11,7 +11,7 @@ from flask_login import (
 
 from dotenv import find_dotenv, load_dotenv
 import flask_login
-from steamspy import querygames
+from steamspy import querygames, query_favorites
 from models import Favorite, db, User, Survey
 
 
@@ -129,7 +129,7 @@ def gamepage():
     )
 
 
-@app.route("/favorite", methods=["POST"])
+@app.route("/favorite", methods=["POST", "GET"])
 @login_required
 def favorite():
     """Route to add or remove a game from favorites"""
@@ -145,12 +145,22 @@ def favorite():
         )
         db.session.add(new_favorite)
     db.session.commit()
+    return flask.redirect(flask.url_for("favoritespage"))
 
 
 @app.route("/favoritespage", methods=["POST", "GET"])
 @login_required
 def favoritespage():
-    return flask.render_template("favorites.html")
+    fav_ids = []
+    favorite_list = Favorite.query.filter_by(
+        username=flask_login.current_user.username
+    ).all()
+    for fav in favorite_list:
+        fav_ids.append(fav.gameid)
+    fav_games = query_favorites(fav_ids)
+    return flask.render_template(
+        "favorites.html", length=len(fav_games), games=fav_games
+    )
 
 
 @app.route("/", methods=["POST", "GET"])

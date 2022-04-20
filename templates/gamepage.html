@@ -23,7 +23,7 @@
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(gameid)
-        }).then(res => console.log(res));
+        }).then(res => window.location.replace("/favoritespage"));
     });
 </script>
 {% endblock %}
