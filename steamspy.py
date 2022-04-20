@@ -44,8 +44,9 @@ def querygames(survey_data):
                 selected_ids.add(id_list[randID])
                 current_game = {}  # below code adds all game details to its own dictionary
                 GAME_REVIEW_URl = REVIEWS_URL + str(id_list[randID]) + "?json=1"
-                response = requests.get(GAME_REVIEW_URl)
-                data = response.json()
+                res = requests.get(GAME_REVIEW_URl)
+                review_list = []
+                data = res.json()
                 for j in data['reviews']:
                     review_list.append(j['review'])
 

@@ -33,24 +33,27 @@
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-warning">
-        <a href="#" class="navbar-brand">
+        <a href="/" class="navbar-brand">
             <img src="static/bread.png" alt="" width="30" height="30">
             Honey Wheat Game Recommender
         </a>
         <div class="collapse navbar-collapse" id="navbarContent">
             <ul class="navbar-nav ms-auto">
-                {% if not current_user.isauthenticated %}
+                
+                {% if not current_user.is_authenticated %}
                 <li class="nav-item">
-                    <a href="{{ url_for('login') }}" class="nav-link">Log In</a>
+                    <form action="/login">
+                        <button id="logoutButton" type="submit">Log In</button>
+                    </form>
                 </li>
                 {% endif %}
+                {% if current_user.is_authenticated %}
                 <li class="nav-item">
                     <a href="/main" class="nav-link">My Recommendations</a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('profile') }}" class="nav-link">My Profile</a>
                 </li>
-                {% if current_user.is_authenticated %}
                 <li class="nav-item">
                     <form id="logForm" action="/logout" method="POST">
                         <button id="logoutButton" type="submit">Log Out</button>

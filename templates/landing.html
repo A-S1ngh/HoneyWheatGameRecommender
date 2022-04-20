@@ -41,7 +41,9 @@
             <ul class="navbar-nav ms-auto">
                 {% if not current_user.isauthenticated %}
                 <li class="nav-item">
-                    <a href="{{ url_for('login') }}" class="nav-link">Log In</a>
+                    <form action="/login">
+                        <button id="logoutButton" type="submit">Log In</button>
+                    </form>
                 </li>
                 {% endif %}
                 <li class="nav-item">
