@@ -1,71 +1,59 @@
 """Steam Spy API Functions"""
+from math import floor
 import os
+import random
 import requests
 from dotenv import find_dotenv, load_dotenv
 
 
 load_dotenv(find_dotenv())
 
-IMAGE_URL = os.getenv("IMAGE_URL")
-GENRE_URL = os.getenv("GENRE_URL")
-DETAILS_URL = os.getenv("DETAILS_URL")
+BASE_IMAGE_URL = os.getenv("IMAGE_URL")
+BASE_GENRE_URL = os.getenv("GENRE_URL")
+BASE_DETAILS_URL = os.getenv("DETAILS_URL")
 
 
 def querygames(survey_data):
     """querygames"""
-    user_data = survey_data  # pull ratings for each genre for the current user
-    action = user_data.action
-    adventure = user_data.adventure
-    roleplaying = user_data.roleplaying
-    strategy = user_data.strategy
-    sports = user_data.sports
-    simulation = user_data.simulation
-    racing = user_data.racing
     genres = {
-        "action": action,
-        "adventure": adventure,
-        "roleplaying": roleplaying,
-        "strategy": strategy,
-        "sports": sports,
-        "simulation": simulation,
-        "racing": racing,
+        "action": survey_data.action,
+        "adventure": survey_data.adventure,
+        "rpg": survey_data.roleplaying,
+        "strategy": survey_data.strategy,
+        "sports": survey_data.sports,
+        "simulation": survey_data.simulation,
+        "racing": survey_data.racing
     }
+    total = sum(genres.values())
     games = []
-
-    for genrename in genres:
-        if genres[genrename] > 1:  # No results for genres with a 1
-            genre = GENRE_URL + genrename  # create the api call to games in this genre
-            response = requests.get(genre)
-            response_json = response.json()
-            if genres[genrename] > 7:  # Covers 10-8
-                results = slice(0, 8)
-            elif genres[genrename] > 4:  # Covers 7-5
-                results = slice(0, 6)
-            else:  # Covers 4-2
-                results = slice(0, 3)
-            appid = list(response_json)[results]
-            for i in range(len(appid)):  # work gets done for each genre call
-                current_game = (
-                    {}
-                )  # below code adds all game details to its own dictionary
-                details_path = DETAILS_URL + str(appid[i])
+    selected_ids = set()
+    for genre, rating in sorted(genres.items(), key=lambda item: item[1], reverse=True):
+        genreURL = BASE_GENRE_URL + genre  # create the api call to games in this genre
+        response = requests.get(genreURL)
+        response = response.json()
+        id_list = list(response)
+        numOfGames = floor((rating / total) * 36)
+        if id_list:
+            for i in range(numOfGames):
+                randID = random.randint(1,100)
+                while(id_list[randID] in selected_ids):
+                    randID = random.randint(1,100)
+                selected_ids.add(id_list[randID])
+                current_game = {}  # below code adds all game details to its own dictionary
+                details_path = BASE_DETAILS_URL + str(id_list[randID])
                 current_game["details"] = details_path
-                poster_path = IMAGE_URL + str(appid[i]) + "/header.jpg"
+                poster_path = BASE_IMAGE_URL + str(id_list[randID]) + "/header.jpg"
                 current_game["image"] = poster_path
-                current_game["title"] = str(response_json[appid[i]]["name"])
-                current_game["price"] = int(response_json[appid[i]]["price"])
+                current_game["title"] = str(response[id_list[randID]]["name"])
+                current_game["price"] = int(response[id_list[randID]]["price"])
                 games.append(current_game)
-                games = [
-                    dict(tupleized)
-                    for tupleized in set(tuple(game.items()) for game in games)
-                ]
     if games:
         return games
     current_game = {}
-    poster_path = IMAGE_URL + "1222670" + "/header.jpg"
+    poster_path = BASE_IMAGE_URL + "1222670" + "/header.jpg"
     current_game["image"] = poster_path
     current_game["title"] = "The Sim's 4"
     current_game["price"] = 4000
-    current_game["details"] = DETAILS_URL + "1222670"
+    current_game["details"] = BASE_DETAILS_URL + "1222670"
     games.append(current_game)
     return games

@@ -126,6 +126,7 @@ def main():
     survey_data = Survey.query.filter_by(user_id=userid).first()
     if survey_data:
         games = querygames(survey_data)
+        print(survey_data)
         return flask.render_template(
             "main.html",
             len=len(games),
