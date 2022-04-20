@@ -133,11 +133,13 @@ def main():
         )
     return flask.redirect(flask.url_for("survey"))
 
+
 @app.route("/", methods=["POST", "GET"])
 def landing():
     """Landing Page"""
-    
+
     return flask.render_template("landing.html")
+
 
 @app.route("/survey", methods=["POST", "GET"])
 @login_required
@@ -176,27 +178,29 @@ def profile():
     """User Profile"""
     userid = current_user.id
     survey_data = Survey.query.filter_by(user_id=userid).first()
-    user_name = current_user.username
-    email = current_user.email
-    action = survey_data.action
-    adventure = survey_data.adventure
-    roleplaying = survey_data.roleplaying
-    strategy = survey_data.strategy
-    sports = survey_data.sports
-    simulation = survey_data.simulation
-    racing = survey_data.racing
-    return flask.render_template(
-        "profile.html",
-        email=email,
-        user_name=user_name,
-        action=action,
-        adventure=adventure,
-        roleplaying=roleplaying,
-        strategy=strategy,
-        sports=sports,
-        simulation=simulation,
-        racing=racing,
-    )
+    if survey_data:
+        user_name = current_user.username
+        email = current_user.email
+        action = survey_data.action
+        adventure = survey_data.adventure
+        roleplaying = survey_data.roleplaying
+        strategy = survey_data.strategy
+        sports = survey_data.sports
+        simulation = survey_data.simulation
+        racing = survey_data.racing
+        return flask.render_template(
+            "profile.html",
+            email=email,
+            user_name=user_name,
+            action=action,
+            adventure=adventure,
+            roleplaying=roleplaying,
+            strategy=strategy,
+            sports=sports,
+            simulation=simulation,
+            racing=racing,
+        )
+    return flask.redirect(flask.url_for("survey"))
 
 
 if __name__ == "__main__":
