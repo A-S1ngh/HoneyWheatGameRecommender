@@ -2,6 +2,9 @@
 {% block content %}
     <div id="loginContainer" style="text-align: center;">
         <h3 id="login-text" style="text-align: center; color: red;">Login</h3>
+       {% if error %}
+            <p id="login-text" style="text-align: center; color: red;"><strong>Error: </strong>{{ error }}</p>
+        {% endif %}
         <form action="/login" method='POST' id='login-form'>
             <input type="text" placeholder="Email" name='email'><br><br>
             <input type="password" placeholder="Password" name='password'><br><br>
