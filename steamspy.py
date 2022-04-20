@@ -49,7 +49,7 @@ def querygames(survey_data):
                 data = res.json()
                 count = 0
                 for j in data['reviews']:
-                    if count > 3:
+                    if count > 6:
                         break
                     info = (j['review'][:200] + '..') if len(j['review']) > 200 else j['review']
                     review_list.append(info)
