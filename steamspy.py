@@ -51,7 +51,8 @@ def querygames(survey_data):
                 for j in data['reviews']:
                     if count > 3:
                         break
-                    review_list.append(j['review'])
+                    info = (j['review'][:200] + '..') if len(j['review']) > 200 else j['review']
+                    review_list.append(info)
                     count+=1
 
                 current_game["reviews"] = tuple(review_list)
