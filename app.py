@@ -18,6 +18,8 @@ load_dotenv(find_dotenv())
 login_manager = LoginManager()
 
 # database still need to be connected to a heroku url
+game_list = {}
+reviews = []  
 
 app = flask.Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
@@ -113,9 +115,28 @@ def gamepage():
     image = flask.request.args.get("image")
     title = flask.request.args.get("title")
     price = int(flask.request.args.get("price")) / 100
+    for game in game_list:
+        
+        if game["title"] == title:
+            global reviews
+            reviews = game["reviews"]
+            
+            
+    if price == 0.0:
+        price = 0
+    return flask.render_template(
+        "gamepage.html",
+        title=title,
+        price=price,
+        image=image,
+        reviews=reviews,
+        len=len(reviews),
+    )
+
     if price == 0.0:
         price = 0
     return flask.render_template("gamepage.html", title=title, price=price, image=image)
+
 
 
 @app.route("/", methods=["POST", "GET"])
@@ -124,15 +145,19 @@ def main():
     """main"""
     userid = current_user.id
     survey_data = Survey.query.filter_by(user_id=userid).first()
+
     if survey_data:
         games = querygames(survey_data)
-        print(survey_data)
+        global game_list
+        game_list = games
+       
         return flask.render_template(
             "main.html",
             len=len(games),
             games=games,
         )
     return flask.redirect(flask.url_for("survey"))
+
 
 
 @app.route("/survey", methods=["POST", "GET"])
@@ -164,6 +189,7 @@ def survey():
         return flask.redirect(flask.url_for("main"))
 
     return flask.render_template("survey.html")
+
 
 
 @app.route("/profile")
