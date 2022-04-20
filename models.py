@@ -54,3 +54,9 @@ class Survey(db.Model):
         self.simulation = simulation
         self.racing = racing
         self.user_id = user
+
+
+class Favorite(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(24), nullable=False)
+    gameid = db.Column(db.Integer)

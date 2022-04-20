@@ -1,0 +1,13 @@
+{% extends 'index.html' %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css')}}">
+
+<div class="container">
+    {%for game in games%}
+    <div class="card-img">
+        <a href="{{ url_for('gamepage',image=game.image,title=game.title,price=game.price,gameid=game.gameid) }}">
+            <img src=" {{game.image}}" class="grow" width="350" height="155">
+        </a>
+    </div>
+    {%endfor%}
+</div>{% endblock %}

@@ -15,8 +15,9 @@
     h3,
     a,
     form,
-    p,
-    h2 {
+    h2,
+    h1,
+     p {
         font-family: 'PF Tempesta Seven', sans-serif;
     }
 
@@ -40,7 +41,6 @@
         </a>
         <div class="collapse navbar-collapse" id="navbarContent">
             <ul class="navbar-nav ms-auto">
-                
                 {% if not current_user.is_authenticated %}
                 <li class="nav-item">
                     <form action="/login">
@@ -51,6 +51,9 @@
                 {% if current_user.is_authenticated %}
                 <li class="nav-item">
                     <a href="/main" class="nav-link">My Recommendations</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/favoritespage" class="nav-link">My Favorites</a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('profile') }}" class="nav-link">My Profile</a>

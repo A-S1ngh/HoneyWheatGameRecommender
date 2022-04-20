@@ -57,6 +57,7 @@ def querygames(survey_data):
                 current_game["image"] = poster_path
                 current_game["title"] = str(response[id_list[randID]]["name"])
                 current_game["price"] = int(response[id_list[randID]]["price"])
+                current_game["gameid"] = id_list[randID]
                 games.append(current_game)
     if games:
         return games
@@ -77,3 +78,31 @@ def querygames(survey_data):
     games.append(current_game)
     return games
 
+
+def query_favorites(list_of_favoriteids):
+    games = []
+    i = 0
+    for favid in list_of_favoriteids:
+        image_path = IMAGE_URL + str(favid) + "/header.jpg"
+        details_path = DETAILS_URL + str(favid)
+        response = requests.get(details_path)
+        response_json = response.json()
+        current_game = {}
+        current_game["image"] = image_path
+        current_game["title"] = response_json["name"]
+        current_game["price"] = response_json["price"]
+        current_game["details"] = details_path
+        current_game["gameid"] = favid
+        games.append(current_game)
+        i += 1
+    if games:
+        return games
+    else:
+        current_game = {}
+        poster_path = IMAGE_URL + "1222670" + "/header.jpg"
+        current_game["image"] = poster_path
+        current_game["title"] = "The Sim's 4"
+        current_game["price"] = 4000
+        current_game["details"] = DETAILS_URL + "1222670"
+        games.append(current_game)
+        return games

@@ -10,8 +10,9 @@ from flask_login import (
 )
 
 from dotenv import find_dotenv, load_dotenv
-from steamspy import querygames
-from models import db, User, Survey
+import flask_login
+from steamspy import querygames, query_favorites
+from models import Favorite, db, User, Survey
 
 
 load_dotenv(find_dotenv())
@@ -112,16 +113,28 @@ def signup():
 @login_required
 def gamepage():
     """gamepage"""
+    if flask.request.method == "POST":
+        return flask.redirect(flask.url_for("favorites"))
     image = flask.request.args.get("image")
     title = flask.request.args.get("title")
+    gameid = int(flask.request.args.get("gameid"))
+    price = flask.request.args.get("price")
+    favorite = Favorite.query.filter_by(
+        username=flask_login.current_user.username, gameid=gameid
+    ).first()
+    if favorite:
+        message = "Remove from Favorites"
+        color = "White"
+    else:
+        message = "Add to Favorites"
+        color = "red"
+    if price != "FREE":
+        price = int(price) / 100
     price = int(flask.request.args.get("price")) / 100
     for game in game_list:
-        
         if game["title"] == title:
             global reviews
             reviews = game["reviews"]
-            
-            
     if price == 0.0:
         price = 0
     return flask.render_template(
@@ -129,13 +142,46 @@ def gamepage():
         title=title,
         price=price,
         image=image,
+        gameid=gameid,
+        message=message,
+        color=color,
         reviews=reviews,
-        len=len(reviews),
+        len=len(reviews)
     )
 
-    if price == 0.0:
-        price = 0
-    return flask.render_template("gamepage.html", title=title, price=price, image=image)
+
+@app.route("/favorite", methods=["POST", "GET"])
+@login_required
+def favorite():
+    """Route to add or remove a game from favorites"""
+    favorite_data = flask.request.get_json()
+    favorite = Favorite.query.filter_by(
+        username=flask_login.current_user.username, gameid=favorite_data
+    ).first()
+    if favorite:
+        db.session.delete(favorite)
+    else:
+        new_favorite = Favorite(
+            username=flask_login.current_user.username, gameid=favorite_data
+        )
+        db.session.add(new_favorite)
+    db.session.commit()
+    return flask.redirect(flask.url_for("favoritespage"))
+
+
+@app.route("/favoritespage", methods=["POST", "GET"])
+@login_required
+def favoritespage():
+    fav_ids = []
+    favorite_list = Favorite.query.filter_by(
+        username=flask_login.current_user.username
+    ).all()
+    for fav in favorite_list:
+        fav_ids.append(fav.gameid)
+    fav_games = query_favorites(fav_ids)
+    return flask.render_template(
+        "favorites.html", length=len(fav_games), games=fav_games
+    )
 
 
 
@@ -150,7 +196,6 @@ def main():
         games = querygames(survey_data)
         global game_list
         game_list = games
-       
         return flask.render_template(
             "main.html",
             len=len(games),
