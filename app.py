@@ -1,4 +1,5 @@
-from turtle import title
+"""Game Recommendation App"""
+import os
 import flask
 from flask_login import (
     LoginManager,
@@ -8,9 +9,6 @@ from flask_login import (
     logout_user,
 )
 
-import os
-import requests
-from flask_sqlalchemy import SQLAlchemy
 from dotenv import find_dotenv, load_dotenv
 from steamspy import querygames
 from models import db, User, Survey
@@ -35,7 +33,7 @@ app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 
 db.init_app(app)
 
-login_manager.login_view = "index"
+login_manager.login_view = "login"
 login_manager.init_app(app)
 
 
@@ -45,15 +43,11 @@ with app.app_context():
 
 @login_manager.user_loader
 def load_user(user_id):
+    """loads user"""
     return User.query.get(int(user_id))
 
 
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
-
-
-@app.route("/", methods=["POST", "GET"])
+@app.route("/login", methods=["POST", "GET"])
 def login():
     """login"""
     if flask.request.method == "POST":
@@ -63,11 +57,18 @@ def login():
         # If user exists, login. If not, flash error
         if user and user.verify_password(password):
             login_user(user)
-            print("WORKS")
-            return flask.redirect(flask.url_for("survey"))
-        flask.flash("User does not exist!")
+            return flask.redirect(flask.url_for("main"))
+        error = "User does not exist or password is incorrect."
+        return flask.render_template("login.html", error=error)
     # GET route
-    return flask.render_template("index.html")
+    return flask.render_template("login.html")
+
+
+@app.route("/logout", methods=["POST"])
+def logout():
+    """logout user"""
+    logout_user()
+    return flask.redirect(flask.url_for("login"))
 
 
 @app.route("/signup", methods=["POST", "GET"])
@@ -77,6 +78,15 @@ def signup():
         email = flask.request.form["email"]
         username = flask.request.form["username"]
         password = flask.request.form["password"]
+        if len(email) > 64:
+            error = "Length of email is too long."
+            return flask.render_template("signup.html", error=error)
+        elif len(username) > 24:
+            error = "Length of username is too long."
+            return flask.render_template("signup.html", error=error)
+        elif len(password) > 128:
+            error = "Length of password is too long."
+            return flask.render_template("signup.html", error=error)
         if len(email.strip()) >= 3:
             user = User(username, email, password)
             existing = User.query.filter_by(email=email).all()
@@ -88,27 +98,23 @@ def signup():
                 login_user(user)
                 return flask.redirect(flask.url_for("survey"))
             # If taken, flash error
-            flask.flash("email already exists!")
+            error = "email already exists!"
         else:
             # If empty email, flash error
-            flask.flash("Empty emails are not allowed!")
+            error = "Empty emails are not allowed!"
         # Redirect to signup if any errors
-        return flask.redirect(flask.url_for("signup"))
+        return flask.render_template("signup.html", error=error)
     # GET route
     return flask.render_template("signup.html")
 
-def set(game):
-    reviews.append(game) 
-@login_required
+
 @app.route("/gamepage", methods=["POST", "GET"])
+@login_required
 def gamepage():
     """gamepage"""
-    print(current_user)
-    print(current_user.email)
     image = flask.request.args.get("image")
     title = flask.request.args.get("title")
     price = int(flask.request.args.get("price")) / 100
-    
     for game in game_list:
         
         if game["title"] == title:
@@ -127,33 +133,37 @@ def gamepage():
         len=len(reviews),
     )
 
+    if price == 0.0:
+        price = 0
+    return flask.render_template("gamepage.html", title=title, price=price, image=image)
 
+
+
+@app.route("/", methods=["POST", "GET"])
 @login_required
-@app.route("/main", methods=["POST", "GET"])
 def main():
     """main"""
     userid = current_user.id
     survey_data = Survey.query.filter_by(user_id=userid).first()
-    games = querygames(survey_data, userid)
-    global game_list
-    game_list = games
-    
-    return flask.render_template(
-        "main.html",
-        len=len(games),
-        games=games,
-    )
+
+    if survey_data:
+        games = querygames(survey_data)
+        global game_list
+        game_list = games
+       
+        return flask.render_template(
+            "main.html",
+            len=len(games),
+            games=games,
+        )
+    return flask.redirect(flask.url_for("survey"))
 
 
-@login_required
+
 @app.route("/survey", methods=["POST", "GET"])
+@login_required
 def survey():
     """Survey"""
-    userid = current_user.id
-    survey_data = Survey.query.filter_by(user_id=userid).first()
-    if survey_data:
-        return flask.redirect(flask.url_for("main"))
-
     if flask.request.method == "POST":
         userid = current_user.id
         Survey.query.filter_by(user_id=userid).delete()
@@ -176,19 +186,18 @@ def survey():
         )
         db.session.add(survey_data)
         db.session.commit()
-        print(User.survey_data)
         return flask.redirect(flask.url_for("main"))
 
     return flask.render_template("survey.html")
 
 
-@login_required
+
 @app.route("/profile")
+@login_required
 def profile():
     """User Profile"""
     userid = current_user.id
     survey_data = Survey.query.filter_by(user_id=userid).first()
-    print(survey_data.action)
     user_name = current_user.username
     email = current_user.email
     action = survey_data.action
@@ -214,5 +223,7 @@ def profile():
 
 if __name__ == "__main__":
     app.run(
-        host=os.getenv("IP", "0.0.0.0"), port=int(os.getenv("PORT", 8080)), debug=False
+        host=os.getenv("IP", "0.0.0.0"),
+        port=int(os.getenv("PORT", "8080")),
+        debug=False,
     )
