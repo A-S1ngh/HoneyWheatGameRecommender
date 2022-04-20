@@ -47,8 +47,12 @@ def querygames(survey_data):
                 res = requests.get(GAME_REVIEW_URl)
                 review_list = []
                 data = res.json()
+                count = 0
                 for j in data['reviews']:
+                    if count > 3:
+                        break
                     review_list.append(j['review'])
+                    count+=1
 
                 current_game["reviews"] = tuple(review_list)
                 details_path = BASE_DETAILS_URL + str(id_list[randID])
@@ -83,8 +87,8 @@ def query_favorites(list_of_favoriteids):
     games = []
     i = 0
     for favid in list_of_favoriteids:
-        image_path = IMAGE_URL + str(favid) + "/header.jpg"
-        details_path = DETAILS_URL + str(favid)
+        image_path = BASE_IMAGE_URL + str(favid) + "/header.jpg"
+        details_path = BASE_DETAILS_URL + str(favid)
         response = requests.get(details_path)
         response_json = response.json()
         current_game = {}
@@ -99,10 +103,10 @@ def query_favorites(list_of_favoriteids):
         return games
     else:
         current_game = {}
-        poster_path = IMAGE_URL + "1222670" + "/header.jpg"
+        poster_path = BASE_IMAGE_URL + "1222670" + "/header.jpg"
         current_game["image"] = poster_path
         current_game["title"] = "The Sim's 4"
         current_game["price"] = 4000
-        current_game["details"] = DETAILS_URL + "1222670"
+        current_game["details"] = BASE_DETAILS_URL + "1222670"
         games.append(current_game)
         return games
