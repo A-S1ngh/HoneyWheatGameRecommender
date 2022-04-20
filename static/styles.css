@@ -26,6 +26,7 @@
 body {
     background-image: url("bgif.gif");
     background-attachment: fixed;
+    background-repeat: cover;
     
 }
 

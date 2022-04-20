@@ -12,9 +12,9 @@
     </form>
     <br>
     <a href="{{ url_for('signup') }}">Don't have an account? Sign up here!</a>
-    <script src="../static/loading.js"></script>
-    <script src="../static/loading.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='loading.js') }}"></script>
 </div>
+<img id="loading" src="../static/loading.gif" alt="">
 
 
 {% endblock %}

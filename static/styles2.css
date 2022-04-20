@@ -7,9 +7,11 @@
 .card-img {
     justify-content: center;
     align-items: center;
-    margin: 20px;
     width: 350px;
     height: 155px;
+    margin: 40px;
+    text-shadow: 4px 4px black;
+
 }
 
 .grow {
@@ -46,4 +48,29 @@ body {
 
 .about {
     color: purple;
+}
+
+#loading {
+    position: absolute;
+    z-index: 3;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    text-align: center;
+    display: none;
+    width: 75%;
+}
+.review-card {
+    font-size: 20px;
+    color: white;
+    background-color: black;
+    margin: 60px;
+    margin-top: 100px;
+    border: 3px solid gold;
+    border-radius: 10px;
+}
+
+p{
+    font-family: 'PF Tempesta Seven', sans-serif;
 }
