@@ -178,12 +178,15 @@ def favorite():
 @app.route("/favoritespage", methods=["POST", "GET"])
 @login_required
 def favoritespage():
+    """Route that handles loading the favorited games of the users"""
+    # Acquire IDs of favorited games
     fav_ids = []
     favorite_list = Favorite.query.filter_by(
         username=flask_login.current_user.username
     ).all()
     for fav in favorite_list:
         fav_ids.append(fav.gameid)
+    # Use query_favorites to attain information about those games
     fav_games = query_favorites(fav_ids)
     return flask.render_template(
         "favorites.html", length=len(fav_games), games=fav_games
@@ -193,10 +196,12 @@ def favoritespage():
 @app.route("/main", methods=["POST", "GET"])
 @login_required
 def main():
-    """main"""
+    """Route that handles generating a users recommendations given their survey data."""
+    # Pull survey data from DB
     userid = current_user.id
     survey_data = Survey.query.filter_by(user_id=userid).first()
 
+    # Use querygames to generate recommendations with survey data
     if survey_data:
         games = querygames(survey_data)
         global game_list
@@ -208,14 +213,14 @@ def main():
 @app.route("/", methods=["POST", "GET"])
 def landing():
     """Landing Page"""
-
     return flask.render_template("landing.html")
 
 
 @app.route("/survey", methods=["POST", "GET"])
 @login_required
 def survey():
-    """Survey"""
+    """Route will handle and store survey data"""
+    # After user takes survey, store it into the DB
     if flask.request.method == "POST":
         userid = current_user.id
         Survey.query.filter_by(user_id=userid).delete()
@@ -246,9 +251,10 @@ def survey():
 @app.route("/profile")
 @login_required
 def profile():
-    """User Profile"""
+    """Route that handles generating a users profile."""
     userid = current_user.id
     survey_data = Survey.query.filter_by(user_id=userid).first()
+    # Pull survey data and use on profile
     if survey_data:
         user_name = current_user.username
         email = current_user.email
