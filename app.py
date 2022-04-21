@@ -8,7 +8,6 @@ from flask_login import (
     login_user,
     logout_user,
 )
-
 from dotenv import find_dotenv, load_dotenv
 import flask_login
 from steamspy import querygames, query_favorites
@@ -17,10 +16,8 @@ from models import Favorite, db, User, Survey
 
 load_dotenv(find_dotenv())
 login_manager = LoginManager()
-
-# database still need to be connected to a heroku url
 game_list = {}
-reviews = []  
+reviews = []
 
 app = flask.Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
@@ -50,7 +47,7 @@ def load_user(user_id):
 
 @app.route("/login", methods=["POST", "GET"])
 def login():
-    """login"""
+    """Route which handles user login"""
     if flask.request.method == "POST":
         email = flask.request.form["email"]
         password = flask.request.form["password"]
@@ -67,21 +64,24 @@ def login():
 
 @app.route("/logout", methods=["POST"])
 def logout():
-    """logout user"""
+    """Route that handles user logout"""
     logout_user()
     return flask.redirect(flask.url_for("login"))
 
 
 @app.route("/signup", methods=["POST", "GET"])
 def signup():
-    """signup"""
+    """Route that handles a user registration to the site"""
+    # Captures information from form
     if flask.request.method == "POST":
         email = flask.request.form["email"]
         username = flask.request.form["username"]
         password = flask.request.form["password"]
+        # Restricts email from being too long(Max Length: 64 characters)
         if len(email) > 64:
             error = "Length of email is too long."
             return flask.render_template("signup.html", error=error)
+        # Similar process as previous if statement for username and password
         elif len(username) > 24:
             error = "Length of username is too long."
             return flask.render_template("signup.html", error=error)
@@ -112,13 +112,16 @@ def signup():
 @app.route("/gamepage", methods=["POST", "GET"])
 @login_required
 def gamepage():
-    """gamepage"""
+    """Route which renders the page that displays information like price, reviews, etc about the game."""
+    # If a user adds a favorite using the button on a game page, take him to their favorites page
     if flask.request.method == "POST":
         return flask.redirect(flask.url_for("favorites"))
+    # Acquire game information from site parameters
     image = flask.request.args.get("image")
     title = flask.request.args.get("title")
     gameid = int(flask.request.args.get("gameid"))
     price = flask.request.args.get("price")
+    # Check to see if this game is already favorited by the user - Depending on if it is or not, render the button in a different way.
     favorite = Favorite.query.filter_by(
         username=flask_login.current_user.username, gameid=gameid
     ).first()
@@ -128,6 +131,7 @@ def gamepage():
     else:
         message = "Add to Favorites"
         color = "red"
+    # Set price
     if price != "FREE":
         price = int(price) / 100
     price = int(flask.request.args.get("price")) / 100
@@ -146,7 +150,7 @@ def gamepage():
         message=message,
         color=color,
         reviews=reviews,
-        len=len(reviews)
+        len=len(reviews),
     )
 
 
@@ -154,7 +158,9 @@ def gamepage():
 @login_required
 def favorite():
     """Route to add or remove a game from favorites"""
+    # Takes API fetch call and stores the relevant game id in favorite_data
     favorite_data = flask.request.get_json()
+    # If game is already in favorites, remove the game from favorites, and vice versa.
     favorite = Favorite.query.filter_by(
         username=flask_login.current_user.username, gameid=favorite_data
     ).first()
@@ -172,51 +178,49 @@ def favorite():
 @app.route("/favoritespage", methods=["POST", "GET"])
 @login_required
 def favoritespage():
+    """Route that handles loading the favorited games of the users"""
+    # Acquire IDs of favorited games
     fav_ids = []
     favorite_list = Favorite.query.filter_by(
         username=flask_login.current_user.username
     ).all()
     for fav in favorite_list:
         fav_ids.append(fav.gameid)
+    # Use query_favorites to attain information about those games
     fav_games = query_favorites(fav_ids)
     return flask.render_template(
         "favorites.html", length=len(fav_games), games=fav_games
     )
 
 
-
 @app.route("/main", methods=["POST", "GET"])
 @login_required
 def main():
-    """main"""
+    """Route that handles generating a users recommendations given their survey data."""
+    # Pull survey data from DB
     userid = current_user.id
     survey_data = Survey.query.filter_by(user_id=userid).first()
 
+    # Use querygames to generate recommendations with survey data
     if survey_data:
         games = querygames(survey_data)
         global game_list
         game_list = games
-        return flask.render_template(
-            "main.html",
-            len=len(games),
-            games=games,
-        )
+        return flask.render_template("main.html", len=len(games), games=games,)
     return flask.redirect(flask.url_for("survey"))
-
 
 
 @app.route("/", methods=["POST", "GET"])
 def landing():
     """Landing Page"""
-
     return flask.render_template("landing.html")
-
 
 
 @app.route("/survey", methods=["POST", "GET"])
 @login_required
 def survey():
-    """Survey"""
+    """Route will handle and store survey data"""
+    # After user takes survey, store it into the DB
     if flask.request.method == "POST":
         userid = current_user.id
         Survey.query.filter_by(user_id=userid).delete()
@@ -244,13 +248,13 @@ def survey():
     return flask.render_template("survey.html")
 
 
-
 @app.route("/profile")
 @login_required
 def profile():
-    """User Profile"""
+    """Route that handles generating a users profile."""
     userid = current_user.id
     survey_data = Survey.query.filter_by(user_id=userid).first()
+    # Pull survey data and use on profile
     if survey_data:
         user_name = current_user.username
         email = current_user.email
