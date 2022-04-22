@@ -8,3 +8,6 @@ disable=
     R0902, # Necessary instance attributes
     R0913, # Necessary arguments
     R0903, # No public methods needed
+    C0301,
+    W0603,
+    C0103

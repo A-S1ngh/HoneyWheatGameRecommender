@@ -57,6 +57,7 @@ class Survey(db.Model):
 
 
 class Favorite(db.Model):
+    """Favorite Model"""
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(24), nullable=False)
     gameid = db.Column(db.Integer)
