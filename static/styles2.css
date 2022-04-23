@@ -35,7 +35,7 @@
 body {
     background-image: url("bg.png");
     background-attachment: fixed;
-
+    
 }
 
 #logoutButton {
@@ -68,7 +68,6 @@ body {
     display: none;
     width: 75%;
 }
-
 .review-card {
     font-size: 20px;
     color: white;
@@ -79,15 +78,6 @@ body {
     border-radius: 10px;
 }
 
-.desc-card {
-    color: white;
-    font-size: 10px;
-    border: 3px solid purple;
-    background-color: black;
-    margin-top: 150px;
-    border-radius: 10px;
-}
-
-p {
+p{
     font-family: 'PF Tempesta Seven', sans-serif;
 }
