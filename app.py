@@ -122,6 +122,12 @@ def gamepage():
     title = flask.request.args.get("title")
     gameid = int(flask.request.args.get("gameid"))
     price = flask.request.args.get("price")
+
+
+    details = flask.request.args.get("details")
+    description = flask.request.args.get("description")
+    # Check to see if this game is already favorited by the user - Depending on if it is or not, render the button in a different way.
+
     reviews = []
     # Check to see if this game is already favorited by
     # the user - Depending on if it is or not, render
