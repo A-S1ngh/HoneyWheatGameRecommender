@@ -51,10 +51,10 @@ def querygames(survey_data):
                     {}
                 )  # below code adds all game details to its own dictionary
 
-                description_url = BASE_DESCRIPTION_URL + str(id_list[randID])
+                description_url = BASE_DESCRIPTION_URL + str(id_list[rand_id])
                 res = requests.get(description_url)
                 data = res.json()
-                cleanhtml = str(data[id_list[randID]]["data"].get("about_the_game"))
+                cleanhtml = str(data[id_list[rand_id]]["data"].get("about_the_game"))
                 cleantext = re.sub(CLEANR, "", cleanhtml)
                 current_game["description"] = cleantext
             
