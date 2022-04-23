@@ -126,7 +126,6 @@ def gamepage():
     details = flask.request.args.get("details")
     description = flask.request.args.get("description")
     # Check to see if this game is already favorited by the user - Depending on if it is or not, render the button in a different way.
-    favorite = Favorite.query.filter_by(
 
     reviews = []
     # Check to see if this game is already favorited by
