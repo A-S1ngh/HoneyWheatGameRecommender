@@ -16,8 +16,7 @@ from models import Favorite, db, User, Survey
 
 load_dotenv(find_dotenv())
 login_manager = LoginManager()
-game_list = {}
-reviews = []
+GAME_LIST = {}
 
 app = flask.Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
@@ -82,10 +81,10 @@ def signup():
             error = "Length of email is too long."
             return flask.render_template("signup.html", error=error)
         # Similar process as previous if statement for username and password
-        elif len(username) > 24:
+        if len(username) > 24:
             error = "Length of username is too long."
             return flask.render_template("signup.html", error=error)
-        elif len(password) > 128:
+        if len(password) > 128:
             error = "Length of password is too long."
             return flask.render_template("signup.html", error=error)
         if len(email.strip()) >= 3:
@@ -112,8 +111,10 @@ def signup():
 @app.route("/gamepage", methods=["POST", "GET"])
 @login_required
 def gamepage():
-    """Route which renders the page that displays information like price, reviews, etc about the game."""
-    # If a user adds a favorite using the button on a game page, take him to their favorites page
+    """Route which renders the page that displays
+    information like price, reviews, etc about the game."""
+    # If a user adds a favorite using the button on a game
+    # page, take him to their favorites page
     if flask.request.method == "POST":
         return flask.redirect(flask.url_for("favorites"))
     # Acquire game information from site parameters
@@ -121,13 +122,21 @@ def gamepage():
     title = flask.request.args.get("title")
     gameid = int(flask.request.args.get("gameid"))
     price = flask.request.args.get("price")
+
     details = flask.request.args.get("details")
     description = flask.request.args.get("description")
     # Check to see if this game is already favorited by the user - Depending on if it is or not, render the button in a different way.
     favorite = Favorite.query.filter_by(
+
+    reviews = []
+    # Check to see if this game is already favorited by
+    # the user - Depending on if it is or not, render
+    # the button in a different way.
+    fav = Favorite.query.filter_by(
+
         username=flask_login.current_user.username, gameid=gameid
     ).first()
-    if favorite:
+    if fav:
         message = "Remove from Favorites"
         color = "White"
     else:
@@ -137,9 +146,8 @@ def gamepage():
     if price != "FREE":
         price = int(price) / 100
     price = int(flask.request.args.get("price")) / 100
-    for game in game_list:
+    for game in GAME_LIST:
         if game["title"] == title:
-            global reviews
             reviews = game["reviews"]
     if price == 0.0:
         price = 0
@@ -165,11 +173,11 @@ def favorite():
     # Takes API fetch call and stores the relevant game id in favorite_data
     favorite_data = flask.request.get_json()
     # If game is already in favorites, remove the game from favorites, and vice versa.
-    favorite = Favorite.query.filter_by(
+    fav = Favorite.query.filter_by(
         username=flask_login.current_user.username, gameid=favorite_data
     ).first()
-    if favorite:
-        db.session.delete(favorite)
+    if fav:
+        db.session.delete(fav)
     else:
         new_favorite = Favorite(
             username=flask_login.current_user.username, gameid=favorite_data
@@ -208,13 +216,15 @@ def main():
     # Use querygames to generate recommendations with survey data
     if survey_data:
         games = querygames(survey_data)
-        global game_list
-        game_list = games
+      
+        global GAME_LIST
+        GAME_LIST = games
         return flask.render_template(
             "main.html",
             len=len(games),
             games=games,
         )
+
     return flask.redirect(flask.url_for("survey"))
 
 

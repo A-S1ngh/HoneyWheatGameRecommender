@@ -9,7 +9,7 @@
         <h1 style="text-align: center; color: yellow; -webkit-text-stroke: 2px black;"><a href="{{details}}">{{title}}</a></h1>
             <h2 style="text-align: center; color: yellow; -webkit-text-stroke: 2px black;">PRICE ${{price}}
                 <br><br>
-                <button class="btn" id='favoritebutton' style="background-color: {{color}};">{{message}}</button>
+                <button class="btn" id='favoritebutton' style="background-color: {{color}}">{{message}}</button>
     </div>
     <div class="desc-card">
         <p>{{description}}</p>
@@ -17,6 +17,8 @@
     <h4 hidden id="gameid">{{gameid}}</h4>
 
 </div>
+<br> <br> <br>
+
 <div>
     <br> <br> <br>
     {%for i in range(0, len)%}

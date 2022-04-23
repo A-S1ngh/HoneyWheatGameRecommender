@@ -1,3 +1,10 @@
+@font-face {
+    font-family: 'PF Tempesta Seven';
+    font-style: normal;
+    font-weight: 400;
+    src: url('/static/pf_tempesta_seven.woff');
+
+}
 .container {
     display: flex;
     justify-content: center;

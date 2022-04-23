@@ -2,22 +2,20 @@
 {% block content %}
 <div>
     <u>
-        <h2 style="text-align: center; color: white;">'s Profile</h2>
+        <h2 style="text-align: center; color: white;">{{user_name}}'s Profile</h2>
     </u>
-    <h3 style="text-align: center; color: white;">Email: </h3>
-    <h3 style="text-align: center; color: purple;">Action Rating: </h3>
-    <h3 style="text-align: center; color: yellow;">Adventure Rating: </h3>
-    <h3 style="text-align: center; color: orange;">Role Playing Rating: </h3>
-    <h3 style="text-align: center; color: blue;">Strategy Rating: </h3>
-    <h3 style="text-align: center; color: green;">Sports Rating: </h3>
-    <h3 style="text-align: center; color: red;">Simulation Rating: </h3>
-    <h3 style="text-align: center; color: greenyellow;">Racing Rating: </h3><br>
+    <h3 style="text-align: center; color: white;">Email: {{email}} </h3>
+    <h3 style="text-align: center; color: purple;">Action Rating: {{action}} </h3>
+    <h3 style="text-align: center; color: yellow;">Adventure Rating: {{adventure}} </h3>
+    <h3 style="text-align: center; color: orange;">Role Playing Rating: {{roleplaying}} </h3>
+    <h3 style="text-align: center; color: blue;">Strategy Rating: {{strategy}} </h3>
+    <h3 style="text-align: center; color: green;">Sports Rating: {{sports}} </h3>
+    <h3 style="text-align: center; color: red;">Simulation Rating: {{simulation}}</h3>
+    <h3 style="text-align: center; color: greenyellow;">Racing Rating: {{racing}}</h3><br>
     <div class="col text-center">
-        <a href="{{ url_for('survey') }}">
-            <button class='btn btn-info mx-auto' style="text-align: center;">Retake the
-                Survey!</button>
-        </a>
+    <a href="{{ url_for('survey', ) }}">
+    <button class='btn btn-info mx-auto' style="text-align: center;">Retake the Survey!</button>
+    </a>
     </div>
-
 </div>
 {% endblock %}

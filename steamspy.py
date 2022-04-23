@@ -6,7 +6,6 @@ import re
 import requests
 from dotenv import find_dotenv, load_dotenv
 
-from models import Survey
 
 
 load_dotenv(find_dotenv())
@@ -36,41 +35,44 @@ def querygames(survey_data):
 
     selected_ids = set()
     for genre, rating in sorted(genres.items(), key=lambda item: item[1], reverse=True):
-        genreURL = BASE_GENRE_URL + genre  # create the api call to games in this genre
-        response = requests.get(genreURL)
+        genre_url = BASE_GENRE_URL + genre  # create the api call to games in this genre
+        response = requests.get(genre_url)
         response = response.json()
         id_list = list(response)
-        numOfGames = floor((rating / total) * 36)
+        num_of_games = floor((rating / total) * 36)
         if id_list:
-            for i in range(numOfGames):
-                randID = random.randint(1, 100)
-                while id_list[randID] in selected_ids:
-                    randID = random.randint(1, 100)
-                selected_ids.add(id_list[randID])
+            for i in range(num_of_games):
+                print(i)
+                rand_id = random.randint(1, 100)
+                while id_list[rand_id] in selected_ids:
+                    rand_id = random.randint(1, 100)
+                selected_ids.add(id_list[rand_id])
                 current_game = (
                     {}
                 )  # below code adds all game details to its own dictionary
+
                 description_url = BASE_DESCRIPTION_URL + str(id_list[randID])
                 res = requests.get(description_url)
                 data = res.json()
                 cleanhtml = str(data[id_list[randID]]["data"].get("about_the_game"))
                 cleantext = re.sub(CLEANR, "", cleanhtml)
                 current_game["description"] = cleantext
-                GAME_REVIEW_URl = REVIEWS_URL + str(id_list[randID]) + "?json=1"
-                res = requests.get(GAME_REVIEW_URl)
+            
+                game_rev_url = REVIEWS_URL + str(id_list[rand_id]) + "?json=1"
+                res = requests.get(game_rev_url)
                 review_list = []
                 data = res.json()
                 for j in data["reviews"]:
                     review_list.append(j["review"])
 
                 current_game["reviews"] = tuple(review_list)
-                details_path = BASE_DETAILS_URL + str(id_list[randID])
+                details_path = BASE_DETAILS_URL + str(id_list[rand_id])
                 current_game["details"] = details_path
-                poster_path = BASE_IMAGE_URL + str(id_list[randID]) + "/header.jpg"
+                poster_path = BASE_IMAGE_URL + str(id_list[rand_id]) + "/header.jpg"
                 current_game["image"] = poster_path
-                current_game["title"] = str(response[id_list[randID]]["name"])
-                current_game["price"] = int(response[id_list[randID]]["price"])
-                current_game["gameid"] = id_list[randID]
+                current_game["title"] = str(response[id_list[rand_id]]["name"])
+                current_game["price"] = int(response[id_list[rand_id]]["price"])
+                current_game["gameid"] = id_list[rand_id]
                 games.append(current_game)
     if games:
         return games
@@ -88,8 +90,8 @@ def querygames(survey_data):
     current_game["description"] = cleantext
     current_game["gameid"] = "1222670"
     review_list = []
-    GAME_REVIEW_URl = REVIEWS_URL + "1222670" + "?json=1"
-    response = requests.get(GAME_REVIEW_URl)
+    game_rev_url = REVIEWS_URL + "1222670" + "?json=1"
+    response = requests.get(game_rev_url)
     data = response.json()
     for j in data["reviews"]:
         review_list.append(j["review"])
@@ -99,7 +101,9 @@ def querygames(survey_data):
 
 
 def query_favorites(list_of_favoriteids):
-    """Takes a list of game ID's as input and returns a list containing a useful dictionary for each game."""
+    """Takes a list of game ID's as input and
+    returns a list containing a useful dictionary
+    for each game."""
     games = []
     i = 0
     for favid in list_of_favoriteids:
@@ -119,13 +123,14 @@ def query_favorites(list_of_favoriteids):
         i += 1
     if games:
         return games
-    else:
-        # If the API crashes, which it sometimes does, return a single dictionary which contains info about the Sims
-        current_game = {}
-        poster_path = BASE_IMAGE_URL + "1222670" + "/header.jpg"
-        current_game["image"] = poster_path
-        current_game["title"] = "The Sim's 4"
-        current_game["price"] = 4000
-        current_game["details"] = BASE_DETAILS_URL + "1222670"
-        games.append(current_game)
-        return games
+        # If the API crashes, which it sometimes does,
+        # return a single dictionary which contains info
+        # about the Sims
+    current_game = {}
+    poster_path = BASE_IMAGE_URL + "1222670" + "/header.jpg"
+    current_game["image"] = poster_path
+    current_game["title"] = "The Sim's 4"
+    current_game["price"] = 4000
+    current_game["details"] = BASE_DETAILS_URL + "1222670"
+    games.append(current_game)
+    return games

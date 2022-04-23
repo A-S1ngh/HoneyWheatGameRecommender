@@ -1,10 +1,10 @@
 """Project Testing"""
 import unittest
 import os
-from app import app
 from unittest.mock import MagicMock, patch
-from steamspy import query_favorites, querygames
-from models import Survey
+from app import app
+from steamspy import query_favorites
+
 
 
 class GameRecommenderTests(unittest.TestCase):
@@ -74,7 +74,7 @@ class GameRecommenderTests(unittest.TestCase):
             "initialprice": "0",
             "discount": "0",
             "ccu": 2006,
-            "languages": "English, French, Italian, German, Spanish - Spain, Japanese, Korean, Simplified Chinese, Traditional Chinese",
+            "languages": "English, French, Italian, German,Spanish - Spain, Japanese, Korean, Simplified Chinese, Traditional Chinese",
             "genre": "Simulation, Sports",
             "tags": {
                 "Basketball": 292,
