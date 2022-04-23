@@ -122,11 +122,18 @@ def gamepage():
     title = flask.request.args.get("title")
     gameid = int(flask.request.args.get("gameid"))
     price = flask.request.args.get("price")
+
+    details = flask.request.args.get("details")
+    description = flask.request.args.get("description")
+    # Check to see if this game is already favorited by the user - Depending on if it is or not, render the button in a different way.
+    favorite = Favorite.query.filter_by(
+
     reviews = []
     # Check to see if this game is already favorited by
     # the user - Depending on if it is or not, render
     # the button in a different way.
     fav = Favorite.query.filter_by(
+
         username=flask_login.current_user.username, gameid=gameid
     ).first()
     if fav:
@@ -153,6 +160,8 @@ def gamepage():
         message=message,
         color=color,
         reviews=reviews,
+        details=details,
+        description=description,
         len=len(reviews),
     )
 
@@ -207,9 +216,15 @@ def main():
     # Use querygames to generate recommendations with survey data
     if survey_data:
         games = querygames(survey_data)
+      
         global GAME_LIST
         GAME_LIST = games
-        return flask.render_template("main.html", len=len(games), games=games,)
+        return flask.render_template(
+            "main.html",
+            len=len(games),
+            games=games,
+        )
+
     return flask.redirect(flask.url_for("survey"))
 
 

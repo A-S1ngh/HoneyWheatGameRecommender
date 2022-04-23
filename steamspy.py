@@ -2,6 +2,7 @@
 from math import floor
 import os
 import random
+import re
 import requests
 from dotenv import find_dotenv, load_dotenv
 
@@ -14,6 +15,8 @@ BASE_IMAGE_URL = os.getenv("IMAGE_URL")
 BASE_GENRE_URL = os.getenv("GENRE_URL")
 BASE_DETAILS_URL = os.getenv("DETAILS_URL")
 REVIEWS_URL = os.getenv("REVIEWS_URL")
+BASE_DESCRIPTION_URL = os.getenv("DESCRIPTION_URL")
+CLEANR = re.compile('<.*?>|&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});')
 
 
 def querygames(survey_data):
@@ -47,6 +50,14 @@ def querygames(survey_data):
                 current_game = (
                     {}
                 )  # below code adds all game details to its own dictionary
+
+                description_url = BASE_DESCRIPTION_URL + str(id_list[randID])
+                res = requests.get(description_url)
+                data = res.json()
+                cleanhtml = str(data[id_list[randID]]["data"].get("about_the_game"))
+                cleantext = re.sub(CLEANR, "", cleanhtml)
+                current_game["description"] = cleantext
+            
                 game_rev_url = REVIEWS_URL + str(id_list[rand_id]) + "?json=1"
                 res = requests.get(game_rev_url)
                 review_list = []
@@ -67,11 +78,17 @@ def querygames(survey_data):
         return games
 
     current_game = {}
+    res = requests.get("https://store.steampowered.com/api/appdetails?appids=1222670")
+    data = res.json()
     poster_path = BASE_IMAGE_URL + "1222670" + "/header.jpg"
     current_game["image"] = poster_path
     current_game["title"] = "The Sim's 4"
     current_game["price"] = 4000
     current_game["details"] = BASE_DETAILS_URL + "1222670"
+    cleanhtml = str(data["1222670"]["data"].get("about_the_game"))
+    cleantext = re.sub(CLEANR, "", cleanhtml)
+    current_game["description"] = cleantext
+    current_game["gameid"] = "1222670"
     review_list = []
     game_rev_url = REVIEWS_URL + "1222670" + "?json=1"
     response = requests.get(game_rev_url)
