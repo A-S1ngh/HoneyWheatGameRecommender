@@ -121,6 +121,8 @@ def gamepage():
     title = flask.request.args.get("title")
     gameid = int(flask.request.args.get("gameid"))
     price = flask.request.args.get("price")
+    details = flask.request.args.get("details")
+    description = flask.request.args.get("description")
     # Check to see if this game is already favorited by the user - Depending on if it is or not, render the button in a different way.
     favorite = Favorite.query.filter_by(
         username=flask_login.current_user.username, gameid=gameid
@@ -150,6 +152,8 @@ def gamepage():
         message=message,
         color=color,
         reviews=reviews,
+        details=details,
+        description=description,
         len=len(reviews),
     )
 
@@ -206,7 +210,11 @@ def main():
         games = querygames(survey_data)
         global game_list
         game_list = games
-        return flask.render_template("main.html", len=len(games), games=games,)
+        return flask.render_template(
+            "main.html",
+            len=len(games),
+            games=games,
+        )
     return flask.redirect(flask.url_for("survey"))
 
 
